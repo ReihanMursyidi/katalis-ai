@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asisten Guru AI - Generator RPP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <aside class="input-panel">
+            <header>
+                <div class="logo">
+                    <i class="fa-solid fa-robot"></i> AsistenGuru<span class="text-red">AI</span>
+                </div>
+                <p class="subtitle">Generator Modul Ajar Kurikulum Merdeka</p>
+
+                <div class="tab-nav">
+                    <button class="tab-btn active" onclick="switchTab('rpp')">
+                        <i class="fa-solid fa-book-open"></i> Modul Ajar
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('quiz')">
+                        <i class="fa-solid fa-list-check"></i> Kuis Soal
+                    </button>
+                </div>
+            </header>
+
+            <form id="form-rpp" class="active-form">
+                <p class="section-label">Konfigurasi RPP</p>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Jenjang</label>
+                        <select id="rpp_jenjang" onchange="updateKelas('rpp')">
+                            <option value="SD">SD</option>
+                            <option value="SMP">SMP</option>
+                            <option value="SMA">SMA</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label>Kelas</label>
+                        <select id="rpp_kelas"><option disabled selected>-</option></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mata Pelajaran</label>
+                    <select id="rpp_mapel">
+                        <option value="Bahasa Indonesia">Bahasa Indonesia</option>
+                        <option value="Matematika">Matematika</option>
+                        <option value="IPA">IPA (Sains)</option>
+                        <option value="IPS">IPS</option>
+                        <option value="PKN">PKN</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Materi Utama</label>
+                    <input type="text" id="rpp_materi" placeholder="Cth: Ekosistem">
+                </div>
+
+                <div class="form-group">
+                    <label>Capaian Pembelajaran</label>
+                    <textarea id="rpp_capaian" rows="2" placeholder="Siswa memahami..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Durasi</label>
+                    <input type="text" id="rpp_durasi" placeholder="Cth: 2 x 45 Menit">
+                </div>
+
+                <button type="button" onclick="generateRPP()" class="btn-submit">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar
+                </button>
+            </form>
+
+            <form id="form-quiz" class="hidden-form">
+                <p class="section-label">Konfigurasi Soal</p>
+                
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Jenjang</label>
+                        <select id="quiz_jenjang" onchange="updateKelas('quiz')">
+                            <option value="SD">SD</option>
+                            <option value="SMP">SMP</option>
+                            <option value="SMA">SMA</option>
+                        </select>
+                    </div>
+                    <div class="form-group half">
+                        <label>Kelas</label>
+                        <select id="quiz_kelas"><option disabled selected>-</option></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Topik Soal</label>
+                    <input type="text" id="quiz_topik" placeholder="Cth: Pecahan Desimal">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Jumlah Soal</label>
+                        <input type="number" id="quiz_jumlah" value="5" min="1" max="20">
+                    </div>
+                    <div class="form-group half">
+                        <label>Jenis Soal</label>
+                        <select id="quiz_jenis">
+                            <option value="Pilihan Ganda">Pilihan Ganda</option>
+                            <option value="Essay">Essay / Uraian</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tingkat Kesulitan</label>
+                    <select id="quiz_kesulitan">
+                        <option value="Mudah">Mudah (LOTS)</option>
+                        <option value="Sedang">Sedang (MOTS)</option>
+                        <option value="Sulit">Sulit (HOTS)</option>
+                    </select>
+                </div>
+
+                <button type="button" onclick="generateQuiz()" class="btn-submit btn-purple">
+                    <i class="fa-solid fa-puzzle-piece"></i> Buat Soal Otomatis
+                </button>
+            </form>
+        </aside>
+
+        <main class="result-panel">
+            <div id="loading-overlay" class="hidden">
+                <div class="spinner"></div>
+                <p>Sedang berpikir...</p>
+            </div>
+
+            <div id="welcome-screen" class="placeholder-content">
+                <i class="fa-solid fa-robot big-icon"></i>
+                <h2>Halo, Cikgu!</h2>
+                <p>Pilih menu di kiri untuk membuat RPP atau Soal Kuis secara instan.</p>
+            </div>
+
+            <div id="result-content" class="result-box hidden">
+                <div class="result-header">
+                    <h3 id="result-title">📄 Hasil Generator</h3>
+                    <button class="btn-copy" onclick="copyToClipboard()">
+                        <i class="fa-regular fa-copy"></i> Salin
+                    </button>
+                </div>
+                <div id="markdown-output" class="markdown-body"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
