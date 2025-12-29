@@ -59,17 +59,17 @@
 
                 <div class="form-group">
                     <label>Materi Utama</label>
-                    <input type="text" id="rpp_materi" placeholder="Cth: Ekosistem">
+                    <input type="text" id="rpp_materi" placeholder="Cth: Ekosistem" min="10" max="50">
                 </div>
 
                 <div class="form-group">
                     <label>Capaian Pembelajaran</label>
-                    <textarea id="rpp_capaian" rows="2" placeholder="Siswa memahami..."></textarea>
+                    <textarea id="rpp_capaian" rows="2" placeholder="Siswa memahami..." min="10" max="100"></textarea>
                 </div>
 
                 <div class="form-group">
                     <label>Durasi</label>
-                    <input type="text" id="rpp_durasi" placeholder="Cth: 2 x 45 Menit">
+                    <input type="text" id="rpp_durasi" placeholder="Cth: 2 x 45 Menit" min="1" max="20">
                 </div>
 
                 <button type="button" onclick="generateRPP()" class="btn-submit">
@@ -97,13 +97,13 @@
 
                 <div class="form-group">
                     <label>Topik Soal</label>
-                    <input type="text" id="quiz_topik" placeholder="Cth: Pecahan Desimal">
+                    <input type="text" id="quiz_topik" placeholder="Cth: Pecahan Desimal" min="10" max="50">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group half">
                         <label>Jumlah Soal</label>
-                        <input type="number" id="quiz_jumlah" value="5" min="1" max="20">
+                        <input type="number" id="quiz_jumlah" value="5" min="1" max="20" oninput="if(value > 20) value=20; if(value < 1) value=1;">
                     </div>
                     <div class="form-group half">
                         <label>Jenis Soal</label>
