@@ -57,7 +57,7 @@ async function generateRPP() {
     
     try {
         // Panggil API Backend (Pastikan main.py sudah berjalan)
-        const response = await fetch('http://127.0.0.1:8000/api/generate-rpp', {
+        const response = await fetch('https://reihanmursyidi-guru-ai.hf.space/api/generate-rpp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
