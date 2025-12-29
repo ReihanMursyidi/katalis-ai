@@ -118,6 +118,14 @@ body {
     box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
 }
 
+.btn-submit:disabled, .btn-purple:disabled {
+    opacity: 0.6;              /* Membuat agak transparan */
+    cursor: not-allowed;       /* Mengubah kursor jadi tanda larangan */
+    filter: grayscale(80%);    /* Membuat warna agak pudar */
+    transform: none !important; /* Mematikan efek goyang/naik */
+    box-shadow: none !important;
+}
+
 /* Warna Ungu khusus tombol Quiz */
 .btn-purple {
     background: linear-gradient(135deg, #8b5cf6, #6d28d9);

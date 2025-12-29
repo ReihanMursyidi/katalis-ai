@@ -158,10 +158,18 @@ async function sendRequest(endpoint, dataPayload) {
     const resultContent = document.getElementById('result-content');
     const outputDiv = document.getElementById('markdown-output');
 
+    const allButtons = document.querySelectorAll('.btn-submit');
+
     // Show Loading
     loader.classList.remove('hidden');
     welcome.classList.add('hidden');
     resultContent.classList.add('hidden');
+
+    // Disable all buttons during request
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+    })
 
     try {
         const response = await fetch(`http://127.0.0.1:8000/api/${endpoint}`, {
@@ -185,6 +193,16 @@ async function sendRequest(endpoint, dataPayload) {
         console.error(error);
     } finally {
         loader.classList.add('hidden');
+
+        // Enable all buttons after request
+        allButtons.forEach(btn => {
+            btn.disabled = false;
+            if(btn.classList.contains('btn-purple')) {
+                btn.innerHTML = '<i class="fa-solid fa-puzzle-piece"></i> Buat Soal Otomatis';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar';
+            }
+        });
     }
 }
 
