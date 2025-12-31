@@ -107,6 +107,29 @@ async function sendRequest(endpoint, dataPayload) {
 }
 
 // TRIGGER TOMBOL GENERATE RPP
+function generateRPP() {
+    // Ambil data dari form RPP (perhatikan ID-nya pakai prefix rpp_)
+    const data = {
+        jenjang: document.getElementById('rpp_jenjang').value,
+        kelas: document.getElementById('rpp_kelas').value,
+        mapel: document.getElementById('rpp_mapel').value,
+        materi: document.getElementById('rpp_materi').value,
+        capaian: document.getElementById('rpp_capaian').value,
+        durasi: document.getElementById('rpp_durasi').value
+    };
+
+    // Validasi input kosong
+    if(!data.materi) {
+        alert("Harap isi materi pelajaran terlebih dahulu!");
+        return;
+    }
+    
+    // Ubah judul hasil & Panggil API
+    document.getElementById('result-title').innerText = "📄 Modul Ajar (RPP)";
+    sendRequest('generate-rpp', data);
+}
+
+// TRIGGER TOMBOL GENERATE QUIZ
 function generateQuiz() {
     // Ambil data dari form Quiz
     const data = {
