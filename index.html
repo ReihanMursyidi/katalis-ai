@@ -2,9 +2,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asisten Guru AI - Generator RPP</title>
+    <title>EduPlan AI - Asisten Cerdas Para Pengajar</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -14,9 +14,21 @@
         <aside class="input-panel">
             <header>
                 <div class="logo">
-                    <i class="fa-solid fa-robot"></i> AsistenGuru<span class="text-red">AI</span>
+                    <i class="fa-solid fa-brain text-blue"></i>EduPlan<span class="text-blue">AI</span>
                 </div>
-                <p class="subtitle">Generator Modul Ajar Kurikulum Merdeka</p>
+                <p class="subtitle">Produktivitas Pengajar, Didukung AI</p>
+
+                <div class="coin-balance">
+                    <div>
+                        <span style="font-size: 0.7rem; color: #94a3b8; display: block;">Koin Anda</span>
+                        <span class="coin-count">
+                            <i class="fa-solid fa-coins text-yellow"></i> 30 Koin</span>
+                        </span>
+                    </div>
+                    <button class="btn-topup" onclick="alert('Fitur Top Up akan segera hadir!')">
+                        <i class="fa-solid fa-plus"></i> Top Up
+                    </button>
+                </div>
 
                 <div class="tab-nav">
                     <button class="tab-btn active" onclick="switchTab('rpp')">
@@ -47,13 +59,7 @@
 
                 <div class="form-group">
                     <label>Mata Pelajaran</label>
-                    <select id="rpp_mapel">
-                        <option value="Bahasa Indonesia">Bahasa Indonesia</option>
-                        <option value="Matematika">Matematika</option>
-                        <option value="IPA">IPA (Sains)</option>
-                        <option value="IPS">IPS</option>
-                        <option value="PKN">PKN</option>
-                    </select>
+                    <input type="text" id="rpp_mapel" placeholder="Cth: Bahasa Indonesia" min="10" max="20">
                 </div>
 
                 <div class="form-group">
@@ -72,7 +78,7 @@
                 </div>
 
                 <button type="button" onclick="generateRPP()" class="btn-submit">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar (10 Koin)
                 </button>
             </form>
 
@@ -92,6 +98,11 @@
                         <label>Kelas</label>
                         <select id="quiz_kelas"><option disabled selected>-</option></select>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mata Pelajaran</label>
+                    <input type="text" id="quiz_topik" placeholder="Cth: Matematika" min="10" max="50">
                 </div>
 
                 <div class="form-group">
@@ -123,7 +134,7 @@
                 </div>
 
                 <button type="button" onclick="generateQuiz()" class="btn-submit btn-purple">
-                    <i class="fa-solid fa-puzzle-piece"></i> Buat Soal Otomatis
+                    <i class="fa-solid fa-puzzle-piece"></i> Buat Soal (10 Koin)
                 </button>
             </form>
         </aside>
@@ -131,18 +142,18 @@
         <main class="result-panel">
             <div id="loading-overlay" class="hidden">
                 <div class="spinner"></div>
-                <p>Sedang berpikir...</p>
+                <p style="color: var(--text-muted);">Sedang berpikir...</p>
             </div>
 
             <div id="welcome-screen" class="placeholder-content">
                 <i class="fa-solid fa-robot big-icon"></i>
-                <h2>Halo, Cikgu!</h2>
-                <p>Pilih menu di kiri untuk membuat RPP atau Soal Kuis secara instan.</p>
+                <h2>Halo, Pengajar Hebat!</h2>
+                <p>Silakan isi formulir di panel kiri untuk mulai.</p>
             </div>
 
             <div id="result-content" class="result-box hidden">
                 <div class="result-header">
-                    <h3 id="result-title">📄 Hasil Generator</h3>
+                    <h3 id="result-title"><i class="fa-solid fa-check-circle text-blue"></i>📄 Hasil Generator</h3>
                     <button class="btn-copy" onclick="copyToClipboard()">
                         <i class="fa-regular fa-copy"></i> Salin
                     </button>
@@ -154,5 +165,4 @@
 
     <script src="script.js"></script>
 </body>
-
 </html>
