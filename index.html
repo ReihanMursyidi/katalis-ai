@@ -1,192 +1,216 @@
+<!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduPlan AI - Asisten Cerdas Para Pengajar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <script src="mapel.js"></script>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EduPlan AI - Asisten Cerdas Para Pengajar</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <div class="main-container">
-        <aside class="input-panel">
-            <header>
-                <div class="logo">
-                    <i class="fa-solid fa-brain text-blue"></i>EduPlan<span class="text-blue">AI</span>
-                </div>
-                <p class="subtitle">Membantu Produktivitas Para Pengajar di Indonesia</p>
+        <style>
+            body { font-family: 'Poppins', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+            
+            /* Glass Effect Navbar */
+            .glass-nav {
+                background: rgba(15, 23, 42, 0.8);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
 
-                <div class="coin-balance">
-                    <div>
-                        <span style="font-size: 0.7rem; color: #94a3b8; display: block;">Koin Anda</span>
-                        <span class="coin-count" id="ui-coin-count">
-                            <i class="fa-solid fa-coins"></i> <span id="coin-value">0</span>
-                        </span>
-                        <div id="refill-info" class="hidden" style="font-size: 0.65rem; color: #64748b; margin-top: 4px;">
-                            <i class="fa-regular fa-clock"></i> Reset gratis: <span id="refill-timer">...</span>
-                        </div>
+            /* Gradient Text */
+            .text-gradient {
+                background: linear-gradient(to right, #60a5fa, #c084fc);
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            /* Card Pricing */
+            .pricing-card {
+                background: #1e293b;
+                border: 1px solid #334155;
+                transition: all 0.3s ease;
+            }
+            .pricing-card:hover {
+                transform: translateY(-5px);
+                border-color: #60a5fa;
+                box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+            }
+
+            .btn-glow {
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            }
+            .btn-glow:hover {
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+            }
+        </style>
+    </head>
+    <body class="antialiased">
+
+        <nav class="fixed w-full z-50 glass-nav top-0">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-blue-500 text-2xl"></i>
+                        <span class="text-xl font-bold">EduPlan<span class="text-blue-400">AI</span></span>
                     </div>
-                    <button class="btn-topup" onclick="window.open('LINK_MAYAR_KAMU', '_blank')">
-                        <i class="fa-solid fa-plus"></i> Top Up
-                    </button>
-                </div>
-
-                <div class="tab-nav">
-                    <button class="tab-btn active" onclick="switchTab('rpp')">
-                        <i class="fa-solid fa-book-open"></i> Modul Ajar
-                    </button>
-                    <button class="tab-btn" onclick="switchTab('quiz')">
-                        <i class="fa-solid fa-list-check"></i> Kuis Soal
-                    </button>
-                </div>
-            </header>
-
-            <form id="form-rpp" class="active-form">
-                <p class="section-label">Konfigurasi RPP</p>
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Jenjang</label>
-                        <select id="rpp_jenjang" onchange="updateKelas('rpp')">
-                            <option disabled selected>Pilih Jenjang...</option>
-                            <option value="SD">SD</option>
-                            <option value="SMP">SMP</option>
-                            <option value="SMA">SMA</option>
-                        </select>
-                    </div>
-                    <div class="form-group half">
-                        <label>Kelas</label>
-                        <select id="rpp_kelas">
-                            <option disabled selected>Pilih Kelas</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Mata Pelajaran</label>
-                    <select id="rpp_mapel" onchange="checkMapelLainnya('rpp')">
-                        <option disabled selected>Pilih Jenjang & Kelas dulu...</option>
-                    </select>
                     
-                    <input type="text" id="rpp_mapel_manual" class="hidden" placeholder="Tulis nama mata pelajaran..." style="margin-top: 10px;">
-                </div>
-
-                <div class="form-group">
-                    <label>Materi Utama</label>
-                    <input type="text" id="rpp_materi" placeholder="Cth: Ekosistem" min="10" max="50">
-                </div>
-
-                <div class="form-group">
-                    <label>Capaian Pembelajaran</label>
-                    <textarea id="rpp_capaian" rows="2" placeholder="Siswa memahami..." min="10" max="100"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Durasi</label>
-                    <input type="text" id="rpp_durasi" placeholder="Cth: 2 x 45 Menit" min="1" max="20">
-                </div>
-
-                <button type="button" onclick="generateRPP()" class="btn-submit">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar (10 Koin)
-                </button>
-            </form>
-
-            <form id="form-quiz" class="hidden-form">
-                <p class="section-label">Konfigurasi Soal</p>
-                
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Jenjang</label>
-                        <select id="quiz_jenjang" onchange="updateKelas('quiz')">
-                            <option value="" disabled selected>Pilih Jenjang...</option>
-                            <option value="SD">SD</option>
-                            <option value="SMP">SMP</option>
-                            <option value="SMA">SMA</option>
-                        </select>
+                    <div class="hidden md:flex space-x-8">
+                        <a href="#fitur" class="text-gray-300 hover:text-white transition">Fitur</a>
+                        <a href="#harga" class="text-gray-300 hover:text-white transition">Harga</a>
+                        <a href="#testimoni" class="text-gray-300 hover:text-white transition">Testimoni</a>
                     </div>
-                    <div class="form-group half">
-                        <label>Kelas</label>
-                        <select id="quiz_kelas"><option disabled selected>-</option></select>
+
+                    <div>
+                        <a href="app.html" class="bg-slate-700 hover:bg-slate-600 text-white px-5 py-2 rounded-full font-medium transition border border-slate-600">
+                            Login / Masuk
+                        </a>
                     </div>
                 </div>
+            </div>
+        </nav>
 
-                <div class="form-group">
-                    <label>Mata Pelajaran</label>
-                    <select id="quiz_mapel" onchange="checkMapelLainnya('quiz')">
-                        <option disabled selected>Pilih Jenjang & Kelas dulu...</option>
-                    </select>
-                    <input type="text" id="quiz_mapel_manual" class="hidden" placeholder="Tulis mapel..." style="margin-top: 10px;">
-                </div>
+        <section class="pt-32 pb-20 px-4 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[100px] -z-10"></div>
 
-                <div class="form-group">
-                    <label>Topik Soal</label>
-                    <input type="text" id="quiz_topik" placeholder="Cth: Pecahan Desimal" min="5" max="50">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Jumlah Soal</label>
-                        <input type="number" id="quiz_jumlah" value="5" min="1" max="20" oninput="if(value > 20) value=20; if(value < 1) value=1;">
-                    </div>
-                    <div class="form-group half">
-                        <label>Jenis Soal</label>
-                        <select id="quiz_jenis">
-                            <option value="Pilihan Ganda">Pilihan Ganda</option>
-                            <option value="Essay">Essay / Uraian</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Tingkat Kesulitan</label>
-                    <select id="quiz_kesulitan">
-                        <option value="Mudah">Mudah (LOTS)</option>
-                        <option value="Sedang">Sedang (MOTS)</option>
-                        <option value="Sulit">Sulit (HOTS)</option>
-                    </select>
-                </div>
-
-                <button type="button" onclick="generateQuiz()" class="btn-submit btn-purple">
-                    <i class="fa-solid fa-puzzle-piece"></i> Buat Soal (10 Koin)
-                </button>
-            </form>
-            <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #334155; text-align: center;">
-                <p style="font-size: 0.75rem; color: #94a3b8;">
-                    Powered by 
-                    <span style="font-weight: 600; background: linear-gradient(to right, #2D79EF, #EC5360); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                        Google Gemini </i>
+            <div class="max-w-5xl mx-auto text-center">
+    
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-md text-blue-300 text-sm font-medium mb-8 hover:bg-blue-500/20 transition-all cursor-default shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                    <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                     </span>
+                    Asisten AI Terpadu untuk Guru Indonesia
+                </div>
+
+                <h1 class="text-4xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6 text-white">
+                    Platform Cerdas untuk <br class="hidden md:block" />
+                    <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                        Semua Tugas Guru
+                    </span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    Tingkatkan produktivitas mengajar Anda dengan bantuan AI
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="app.html" class="btn-glow text-white px-8 py-4 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95">
+                        Mulai Gratis
+                    </a>
+                    <a href="#fitur" class="bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur text-white px-8 py-4 rounded-xl font-bold text-lg transition border border-slate-700 hover:border-slate-500">
+                        Pelajari Fitur
+                    </a>
+                </div>
+                
+                <p class="mt-6 text-sm text-slate-500 font-medium">
+                    <i class="fa-solid fa-coins text-yellow-500"></i> Gratis 50 Koin Pendaftaran
                 </p>
             </div>
-        </aside>
+        </section>
 
-        <main class="result-panel">
-            <div id="loading-overlay" class="hidden">
-                <div class="spinner"></div>
-                <p style="color: var(--text-muted);">Sedang berpikir...</p>
-            </div>
-
-            <div id="welcome-screen" class="placeholder-content">
-                <i class="fa-solid fa-robot big-icon"></i>
-                <h2>Halo, Pengajar Hebat!</h2>
-                <p>Silakan isi formulir di panel kiri untuk mulai.</p>
-            </div>
-
-            <div id="result-content" class="result-box hidden">
-                <div class="result-header">
-                    <h3 id="result-title"><i class="fa-solid fa-check-circle text-blue"></i>📄 Hasil Generator</h3>
-                    <button class="btn-copy" onclick="copyToClipboard()">
-                        <i class="fa-regular fa-copy"></i> Salin
-                    </button>
+        <section id="fitur" class="py-20 bg-slate-900/50">
+            <div class="max-w-7xl mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-12">Fitur Unggulan</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="pricing-card p-8 rounded-2xl">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-book-open text-blue-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Modul Ajar Instan</h3>
+                        <p class="text-slate-400">Buat RPP lengkap dengan Tujuan Pembelajaran, Langkah-langkah, dan Asesmen sesuai jenjang SD, SMP, SMA.</p>
+                    </div>
+                    <div class="pricing-card p-8 rounded-2xl">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-list-check text-purple-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Generator Soal Kuis</h3>
+                        <p class="text-slate-400">Bikin 20 soal Pilihan Ganda atau Essay beserta kunci jawaban hanya dengan memasukkan topik materi.</p>
+                    </div>
+                    <div class="pricing-card p-8 rounded-2xl">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-file-word text-green-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Export Dokumen</h3>
+                        <p class="text-slate-400">Salin hasil generate langsung ke Microsoft Word atau Google Docs dengan format yang rapi.</p>
+                    </div>
                 </div>
-                <div id="markdown-output" class="markdown-body"></div>
             </div>
-        </main>
-    </div>
+        </section>
 
-    
-    <script src="script.js"></script>
-</body>
+        <section id="harga" class="py-20">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-3xl font-bold text-center mb-4">Pilih Paket Investasi</h2>
+                <p class="text-center text-slate-400 mb-12">Mulai dari gratis, bayar sesuai kebutuhan, atau langganan hemat.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    
+                    <div class="pricing-card p-8 rounded-2xl relative">
+                        <h3 class="text-xl font-bold text-white">Starter</h3>
+                        <div class="my-4">
+                            <span class="text-4xl font-extrabold text-white">Rp 0</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6">Untuk mencoba kecanggihan AI.</p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> <strong>50 Koin</strong> Gratis saat Daftar</li>
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Akses Modul Ajar & Kuis</li>
+                            <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Kecepatan Standar</li>
+                            <li><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i> Refill otomatis jika habis</li>
+                        </ul>
+                        <a href="app.html" class="block w-full py-3 rounded-lg border border-slate-600 text-center hover:bg-slate-700 transition">Daftar Gratis</a>
+                    </div>
+
+                    <div class="pricing-card p-8 rounded-2xl border-blue-500 relative transform md:scale-110 z-10 bg-slate-800">
+                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">POPULER</div>
+                        <h3 class="text-xl font-bold text-white">Isi Ulang Koin</h3>
+                        <div class="my-4">
+                            <span class="text-slate-400 text-sm">Mulai</span>
+                            <span class="text-4xl font-extrabold text-blue-400">Rp 11.000</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6">Bayar hanya saat butuh<br>(Pay as you go).</p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> <strong>50 - 500 Koin</strong></li>
+                            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Koin Aktif Selamanya</li>
+                            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Tidak Ada Biaya Bulanan</li>
+                            <li><i class="fa-solid fa-check text-green-400 mr-2"></i> Prioritas Server</li>
+                        </ul>
+                        <a href="app.html" class="block w-full py-3 rounded-lg bg-blue-600 text-white font-bold text-center hover:bg-blue-500 transition shadow-lg shadow-blue-500/30">
+                            Beli Koin
+                        </a>
+                    </div>
+
+                    <div class="pricing-card p-8 rounded-2xl border-purple-500/50">
+                        <h3 class="text-xl font-bold text-white">EduPlan PRO 👑</h3>
+                        <div class="my-4">
+                            <span class="text-4xl font-extrabold text-purple-400">Rp 35rb</span>
+                            <span class="text-slate-400">/ bulan</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6">Untuk Guru Super Produktif.</p>
+                        <ul class="space-y-3 text-sm text-slate-300 mb-8">
+                            <li><i class="fa-solid fa-infinity text-purple-400 mr-2"></i> <strong>Unlimited</strong> Generate</li>
+                            <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Download Format Word (Docx)</li>
+                            <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Mode AI GPT-4 (Lebih Cerdas)</li>
+                            <li><i class="fa-solid fa-check text-purple-400 mr-2"></i> Support Prioritas</li>
+                        </ul>
+                        <button onclick="alert('Fitur Langganan Segera Hadir!')" class="block w-full py-3 rounded-lg border border-purple-500 text-purple-400 font-bold text-center hover:bg-purple-500 hover:text-white transition">
+                            Langganan
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-slate-950 py-10 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 text-center">
+                <h2 class="text-2xl font-bold mb-4">EduPlan<span class="text-blue-500">AI</span></h2>
+                <p class="text-slate-500 mb-6">Membantu Guru Indonesia Mengajar Lebih Baik.</p>
+                <p class="text-slate-600 text-sm">© 2026 EduPlan AI. Powered by Gemini.</p>
+            </div>
+        </footer>
+
+    </body>
 </html>

@@ -54,6 +54,52 @@ body {
 
 .subtitle { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; }
 
+.user-section{
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+}
+
+.guest-view {
+    text-align: center;
+}
+
+.btn-login-nav {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.user-view {
+    display: none;
+}
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.user-coins {
+    font-size: 0.85rem;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
 .tab-nav {
     display: flex;
     background: var(--bg-dark);
