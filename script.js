@@ -1,40 +1,161 @@
 const BASE_URL = "https://reihanmursyidi-guru-ai.hf.space";
 
+let authToken = localStorage.getItem('eduplan_token'); 
+
+function toggleAuthModal(show) {
+    const modal = document.getElementById('auth-modal');
+    if(show) modal.classList.remove('hidden');
+    else modal.classList.add('hidden');
+}
+
+function switchAuthMode(mode) {
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+
+    if (mode === 'login') {
+        formLogin.classList.remove('hidden');
+        formRegister.classList.add('hidden');
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+    } else {
+        formLogin.classList.add('hidden');
+        formRegister.classList.remove('hidden');
+        tabLogin.classList.remove('active');
+        tabRegister.classList.add('active');
+    }
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById('login_email').value;
+    const password = document.getElementById('login_password').value;
+    const btn = event.target.querySelector('button');
+    
+    btn.innerHTML = 'Masuk...'; btn.disabled = true;
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+        
+        if(response.ok) {
+            authToken = result.access_token;
+            localStorage.setItem('eduplan_token', authToken);
+            localStorage.setItem('eduplan_user', JSON.stringify(result.user_info));
+            updateUserUI(result.user_info);
+            toggleAuthModal(false);
+            alert("Login Berhasil!");
+        } else {
+            alert("Gagal: " + result.detail);
+        }
+    } catch (err) { alert("Error koneksi server."); } 
+    finally { btn.innerHTML = 'Masuk'; btn.disabled = false; }
+}
+
+async function handleRegister(event) {
+    event.preventDefault();
+    const name = document.getElementById('reg_name').value;
+    const email = document.getElementById('reg_email').value;
+    const password = document.getElementById('reg_password').value;
+    const btn = event.target.querySelector('button');
+
+    btn.innerHTML = 'Mendaftar...'; btn.disabled = true;
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ full_name: name, email, password })
+        });
+        const result = await response.json();
+        if(response.ok) {
+            alert("Registrasi Berhasil! Silakan Login.");
+            switchAuthMode('login');
+        } else {
+            alert("Gagal: " + result.detail);
+        }
+    } catch (err) { alert("Error koneksi."); } 
+    finally { btn.innerHTML = 'Daftar Sekarang'; btn.disabled = false; }
+}
+
+function handleLogout() {
+    if(confirm("Yakin ingin keluar?")) {
+        localStorage.removeItem('eduplan_token');
+        localStorage.removeItem('eduplan_user');
+        authToken = null;
+        updateUserUI(null);
+    }
+}
+
+function updateUserUI(userData) {
+    const guestView = document.getElementById('guest-view');
+    const userView = document.getElementById('user-view');
+    
+    if (userData) {
+        guestView.classList.add('hidden');
+        userView.classList.remove('hidden'); userView.style.display = 'block';
+        document.getElementById('display-name').innerText = userData.full_name;
+        document.getElementById('display-coins').innerHTML = `<i class="fa-solid fa-coins text-yellow-400"></i> ${userData.coins}`;
+    } else {
+        guestView.classList.remove('hidden');
+        userView.classList.add('hidden'); userView.style.display = 'none';
+    }
+}
+
+function checkSession() {
+    const savedToken = localStorage.getItem('eduplan_token');
+    const savedUser = localStorage.getItem('eduplan_user');
+    if(savedToken && savedUser) {
+        authToken = savedToken;
+        updateUserUI(JSON.parse(savedUser));
+    }
+}
+
 // LOGIKA NAVIGASI
 function switchTab(tabName) {
     // Ambil elemen form dan tombol
     const formRPP = document.getElementById('form-rpp');
     const formQuiz = document.getElementById('form-quiz');
+    const formRapor = document.getElementById('form-rapor');
     const btns = document.querySelectorAll('.tab-btn');
+
+    document.getElementById('welcome-screen').classList.remove('hidden');
+    document.getElementById('result-content').classList.add('hidden');
     
     // Reset Tampilan Hasil (Kembali ke layar sambutan saat pindah tab)
     document.getElementById('welcome-screen').classList.remove('hidden');
     document.getElementById('result-content').classList.add('hidden');
 
+    [formRPP, formQuiz, formRapor].forEach(f => {
+        f.classList.add('hidden-form'); f.classList.remove('active-form');
+    });
+    btns.forEach(b => b.classList.remove('active'));
+
     if (tabName === 'rpp') {
         // Tampilkan Form RPP
         formRPP.classList.remove('hidden-form');
         formRPP.classList.add('active-form');
-        formQuiz.classList.remove('active-form');
-        formQuiz.classList.add('hidden-form');
-        
+    
         // Highlight Tombol RPP
         btns[0].classList.add('active');
-        btns[1].classList.remove('active');
-
         updateMapel('rpp');
-    } else {
+    } else if (tabName === 'quiz') {
         // Tampilkan Form Quiz
-        formRPP.classList.remove('active-form');
-        formRPP.classList.add('hidden-form');
         formQuiz.classList.remove('hidden-form');
         formQuiz.classList.add('active-form');
 
         // Highlight Tombol Quiz
-        btns[0].classList.remove('active');
         btns[1].classList.add('active');
-
         updateMapel('quiz');
+    } else if (tabName === 'rapor') {
+        formRapor.classList.remove('hidden-form');
+        formRapor.classList.add('active-form');
+        btns[2].classList.add('active');
     }
 }
 
@@ -64,9 +185,7 @@ function updateKelas(type) {
         option.text = `Kelas ${k}`;
         kelasSelect.appendChild(option);
     });
-
-    kelasSelect.onchange = () => updateMapel(type); 
-
+    kelasSelect.onchange = () => updateMapel(type);
     updateMapel(type);
 }
 
@@ -118,7 +237,6 @@ function updateMapel(type) {
             mapelSelect.appendChild(option);
         });
     }
-    
 
     // Tambah opsi "Lainnya"
     const optLain = document.createElement('option');
@@ -146,56 +264,60 @@ async function sendRequest(endpoint, dataPayload) {
     const welcome = document.getElementById('welcome-screen');
     const resultContent = document.getElementById('result-content');
     const outputDiv = document.getElementById('markdown-output');
-    
-    const allButtons = document.querySelectorAll('.btn-submit');
 
     // STATE 1: MULAI LOADING
     loader.classList.remove('hidden');      // Munculkan loading
     welcome.classList.add('hidden');        // Sembunyikan welcome
     resultContent.classList.add('hidden');  // Sembunyikan hasil lama
 
-    // Matikan tombol agar tidak di-spam klik
+    // Matikan tombol
     allButtons.forEach(btn => {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
     });
 
+    const token = localStorage.getItem('eduplan_token');
+
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
     try {
-        // Kirim data ke Backend
         const response = await fetch(`${BASE_URL}/api/${endpoint}`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(dataPayload)
         });
         const result = await response.json();
 
-        if (result.status === 'success') {
-            // STATE 2: SUKSES
+        if (response.ok) {
             resultContent.classList.remove('hidden');
-            // Konversi Markdown ke HTML
             outputDiv.innerHTML = marked.parse(result.data);
+
+            // UPDATE KOIN JIKA ADA
+            if (result.meta && result.meta.remaining_coins !== undefined) {
+                const userSpan = document.getElementById('display-coins');
+                if (userSpan) userSpan.innerHTML = `<i class="fa-solid fa-coins text-yellow-400"></i> ${result.meta.remaining_coins}`;
+                
+                let currentUser = JSON.parse(localStorage.getItem('eduplan_user'));
+                currentUser.coins = result.meta.remaining_coins;
+                localStorage.setItem('eduplan_user', JSON.stringify(currentUser));
+            }
+
         } else {
-            // STATE 3: ERROR DARI BACKEND
-            alert("Terjadi kesalahan: " + result.detail);
+            alert("Gagal: " + result.detail); // Tampilkan pesan error dari backend (misal: Koin kurang)
         }
     } catch (error) {
-        // STATE 4: ERROR KONEKSI
-        alert("Gagal terhubung ke server. Pastikan internet lancar atau backend aktif.");
+        alert("Gagal terhubung ke server.");
         console.error(error);
     } finally {
-        // STATE 5: SELESAI (Apapun yang terjadi)
         loader.classList.add('hidden');
-
-        // Hidupkan tombol kembali
+        // Matikan tombol agar tidak di-spam klik
         allButtons.forEach(btn => {
             btn.disabled = false;
-            
-            // Kembalikan teks tombol sesuai jenisnya
-            if(btn.classList.contains('btn-purple')) {
-                btn.innerHTML = '<i class="fa-solid fa-puzzle-piece"></i> Buat Soal Otomatis';
-            } else {
-                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Buat Modul Ajar';
-            }
+            if(btn.classList.contains('btn-purple')) btn.innerHTML = '<i class="fa-solid fa-feather"></i> Buat Sekarang';
+            else btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate';
         });
     }
 }
@@ -219,16 +341,7 @@ function generateRPP() {
     };
 
     // Validasi
-    if(!data.materi && !mapelFinal) {
-        alert("Mohon isi Materi Pembelajaran dan Mapel terlebih dahulu!");
-        return;
-    } else if (!data.materi) {
-        alert("Mohon isi Materi Pembelajaran terlebih dahulu!");
-        return;
-    } else if (!mapelFinal) {
-        alert("Mohon isi Mata Pelajaran terlebih dahulu!");
-        return;
-    }
+    if(!data.materi || !mapelFinal) { alert("Lengkapi data!"); return; }
     
     // Ubah judul hasil & Panggil API
     document.getElementById('result-title').innerHTML = `<i class="fa-solid fa-book-open text-blue"></i> Modul Ajar (${data.mapel})`;
@@ -261,6 +374,38 @@ function generateQuiz() {
 
     document.getElementById('result-title').innerHTML = `<i class="fa-solid fa-list-check text-blue"></i> Soal Kuis (${mapelFinal})`;
     sendRequest('generate-quiz', data);
+}
+
+function generateRapor() {
+    const nama = document.getElementById('rapor_nama').value;
+    const kelas = document.getElementById('rapor_kelas').value;
+    let nilaiRaw = document.getElementById('rapor_nilai').value;
+    const sikap = document.getElementById('rapor_sikap').value;
+    const catatan = document.getElementById('rapor_catatan').value;
+
+    if (!nama || !nilaiRaw) {
+        alert("Mohon isi Nama Siswa dan Nilai Rata-rata!");
+        return;
+    }
+
+    const nilaiFinal = parseFloat(nilaiRaw.replace(',', '.'));
+
+    if (isNaN(nilaiFinal)) {
+        alert("Nilai harus berupa angka!");
+        return;
+    }
+
+    const data = {
+        nama_siswa: nama,
+        kelas: kelas,
+        nilai_rata: nilaiFinal,
+        sikap: sikap,
+        catatan_guru: catatan
+    };
+
+    document.getElementById('result-title').innerHTML = `<i class="fa-solid fa-pen-nib text-blue"></i> Catatan Rapor (${nama})`;
+
+    sendRequestAuth('generate-rapor', data);
 }
 
 // FITUR COPY TEXT

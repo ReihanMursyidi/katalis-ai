@@ -1,14 +1,15 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from features.rpp_generator import RPPGenerator, generate_rpp
 from features.quiz_generator import QuizRequest, generate_quiz_content
+from features.admin_generator import RaportRequest, generate_raport
 from database import check_db_connection, users_collection
 from security import verify_password, get_password_hash, create_access_token
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from datetime import datetime, timedelta
+from bson import ObjectId
 
 import uvicorn
-
 
 app = FastAPI(title="API EduPlan AI")
 
@@ -99,6 +100,74 @@ async def endpoint_quiz(request:QuizRequest):
         return {"status": "success", "data": quiz_content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# SIMPAN HISTORY
+def save_history(user_id, type, title, content, is_pro):
+    history_data = {
+        "user_id": ObjectId(user_id),
+        "type": type,
+        "title": title,
+        "content": content,
+        "created_at": datetime.utcnow(),
+        "expires_at": None if is_pro else datetime.utcnow() + timedelta(days=30)
+    }
+    print(f"✅ History disimpan. Expired: {history_data['expires_at']}")
+
+@app.post("/api/generate-raport")
+async def endpoint_raport(request: RaportRequest, authorize: str = Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Token tidak ditemukan")
+
+    token = authorization.split(" ")[1]
+
+    user = users_collection.find_one({})
+    if not user: raise HTTPException(status_code=401, detail="User tidak ditemukan")
+
+    is_pro = user.get("is_pro", False)
+    current_coins = user.get("coins", 0)
+
+    # LOGIKA BIAYA
+    cost = 30
+
+    if is_pro:
+        print("👑 User PRO: Gratis & Pakai Model Canggih")
+        final_cost = 0
+    else:
+        print(f"👤 User FREE: Bayar {cost} Koin")
+        if current_coins < cost:
+            raise HTTPException(status_code=400, detail="Koin tidak cukup (Butuh 30 Koin). Upgrade ke Pro untuk akses tanpa batas!")
+        final_cost = cost
+
+    # GENERATE RAPORT
+    try:
+        result = generate_raport(request, is_pro_user=is_pro)
+
+        if final_cost > 0:
+            users_collection.update_one(
+                {"_id": user["_id"]},
+                {"$inc": {"coins": -final_cost}}
+            )
+
+        save_history(
+            user_id=str(user["_id"]),
+            type="raport",
+            title=f"Rapor {request.nama_siswa}",
+            content=result["content"],
+            is_pro=is_pro
+        )
+
+        return {
+            "status": "success",
+            "data": result["content"],
+            "meta": {
+                "model": result["model_used"],
+                "cost_deducted": final_cost,
+                "remaining_coins": current_coins - final_cost
+            }
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True)
