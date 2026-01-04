@@ -200,6 +200,57 @@
                 </button>
             </form>
 
+            
+            <form id="form-rapor" class="hidden-form">
+                <p class="section-label">Generator Narasi Rapor</p>
+            
+                <div class="form-group">
+                    <label>Nama Siswa</label>
+                    <input type="text" id="rapor_nama" placeholder="Cth: Budi Santoso">
+                </div>
+            
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Kelas</label>
+                        <input type="text" id="rapor_kelas" placeholder="X-A">
+                    </div>
+                    <div class="form-group half">
+                        <label>Nilai Rata-rata</label>
+                        <input type="text" id="rapor_nilai" placeholder="85,5" inputmode="decimal">
+                    </div>
+                </div>
+            
+                <div class="form-group">
+                    <label>Sikap / Karakter Utama</label>
+                    <select id="rapor_sikap">
+                        <option value="Sangat Rajin & Aktif">Sangat Rajin & Aktif</option>
+                        <option value="Sopan namun Pendiam">Sopan namun Pendiam</option>
+                        <option value="Perlu Bimbingan Fokus">Perlu Bimbingan Fokus</option>
+                        <option value="Sering Terlambat">Sering Terlambat</option>
+                        <option value="Memiliki Jiwa Kepemimpinan">Memiliki Jiwa Kepemimpinan</option>
+                        <option value="Lainnya">Lainnya (Tulis di catatan)</option>
+                    </select>
+                </div>
+            
+                <div class="form-group">
+                    <label>Catatan Khusus (Opsional)</label>
+                    <textarea id="rapor_catatan" rows="2" placeholder="Cth: Sering tidak mengerjakan PR, tapi jago olahraga..."></textarea>
+                </div>
+            
+                <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 mb-3">
+                    <small class="text-xs text-slate-400 block mb-1">
+                        <i class="fa-solid fa-crown text-yellow-500"></i> <b>Fitur Premium</b>
+                    </small>
+                    <p style="font-size: 0.75rem; color: #94a3b8;">
+                        Gratis untuk User <b>PRO</b>.<br>
+                        User Basic: <b>30 Koin</b> / generate.
+                    </p>
+                </div>
+            
+                <button type="button" onclick="generateRapor()" class="btn-submit btn-purple">
+                    <i class="fa-solid fa-feather"></i> Buat Narasi
+                </button>
+            </form>
             <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #334155; text-align: center;">
                 <p style="font-size: 0.75rem; color: #94a3b8;">
                     Powered by 
@@ -208,56 +259,6 @@
                     </span>
                 </p>
             </div>
-            <form id="form-rapor" class="hidden-form">
-    <p class="section-label">Generator Narasi Rapor</p>
-
-    <div class="form-group">
-        <label>Nama Siswa</label>
-        <input type="text" id="rapor_nama" placeholder="Cth: Budi Santoso">
-    </div>
-
-    <div class="form-row">
-        <div class="form-group half">
-            <label>Kelas</label>
-            <input type="text" id="rapor_kelas" placeholder="X-A">
-        </div>
-        <div class="form-group half">
-            <label>Nilai Rata-rata</label>
-            <input type="text" id="rapor_nilai" placeholder="85,5" inputmode="decimal">
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label>Sikap / Karakter Utama</label>
-        <select id="rapor_sikap">
-            <option value="Sangat Rajin & Aktif">Sangat Rajin & Aktif</option>
-            <option value="Sopan namun Pendiam">Sopan namun Pendiam</option>
-            <option value="Perlu Bimbingan Fokus">Perlu Bimbingan Fokus</option>
-            <option value="Sering Terlambat">Sering Terlambat</option>
-            <option value="Memiliki Jiwa Kepemimpinan">Memiliki Jiwa Kepemimpinan</option>
-            <option value="Lainnya">Lainnya (Tulis di catatan)</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Catatan Khusus (Opsional)</label>
-        <textarea id="rapor_catatan" rows="2" placeholder="Cth: Sering tidak mengerjakan PR, tapi jago olahraga..."></textarea>
-    </div>
-
-    <div class="p-3 bg-slate-800 rounded-lg border border-slate-700 mb-3">
-        <small class="text-xs text-slate-400 block mb-1">
-            <i class="fa-solid fa-crown text-yellow-500"></i> <b>Fitur Premium</b>
-        </small>
-        <p style="font-size: 0.75rem; color: #94a3b8;">
-            Gratis untuk User <b>PRO</b>.<br>
-            User Basic: <b>30 Koin</b> / generate.
-        </p>
-    </div>
-
-    <button type="button" onclick="generateRapor()" class="btn-submit btn-purple">
-        <i class="fa-solid fa-feather"></i> Buat Narasi
-    </button>
-</form>
         </aside>
 
         <main class="result-panel">
@@ -286,4 +287,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
