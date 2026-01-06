@@ -85,19 +85,92 @@ def home():
 
 #ENDPOINT RPP GENERATOR
 @app.post("/api/generate-rpp")
-async def endpoint_rpp(request:RPPGenerator):
+async def endpoint_rpp(request:RPPGenerator, authorization: str = Header(None)):
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Token tidak ditemukan")
+
+    token = authorization.split(" ")[1]
+    user = users_collection.find_one({})
+
+    if not user: raise HTTPException(status_code=401, detail="User tidak valid.")
+
+    is_pro = user.get("is_pro", False)
+    cost = 10
+    final_cost = 0 if is_pro else cost
+
+    if not is_pro and user.get("coins", 0) < cost:
+        raise HTTPException(status_code=400, detail=f"Koin tidak cukup! Butuh {cost} koin.")
+
     try:
         rpp_content = generate_rpp(request)
-        return {"status": "success", "data": rpp_content}
+        
+        # C. POTONG KOIN & UPDATE DB
+        if final_cost > 0:
+            users_collection.update_one(
+                {"_id": user["_id"]}, 
+                {"$inc": {"coins": -final_cost}}
+            )
+            # Ambil koin terbaru setelah dipotong
+            updated_user = users_collection.find_one({"_id": user["_id"]})
+            remaining_coins = updated_user["coins"]
+        else:
+            remaining_coins = user.get("coins", 0)
+
+        # D. RETURN HASIL + SISA KOIN (PENTING AGAR UI BERUBAH)
+        return {
+            "status": "success", 
+            "data": rpp_content,
+            "meta": {
+                "cost_deducted": final_cost,
+                "remaining_coins": remaining_coins
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 #ENDPOINT QUIZ GENERATOR
 @app.post("/api/generate-quiz")
-async def endpoint_quiz(request:QuizRequest):
+async def endpoint_quiz(request: QuizRequest, authorization: str = Header(None)):
+    # A. VALIDASI USER & KOIN
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Token tidak ditemukan.")
+    
+    token = authorization.split(" ")[1]
+    user = users_collection.find_one({}) # Simulasi user
+    
+    if not user: raise HTTPException(status_code=401, detail="User tidak valid.")
+
+    is_pro = user.get("is_pro", False)
+    cost = 10 # Harga Quiz
+    final_cost = 0 if is_pro else cost
+    
+    if not is_pro and user.get("coins", 0) < cost:
+        raise HTTPException(status_code=400, detail=f"Koin tidak cukup! Butuh {cost} koin.")
+
+    # B. GENERATE CONTENT
     try:
         quiz_content = generate_quiz_content(request)
-        return {"status": "success", "data": quiz_content}
+        
+        # C. POTONG KOIN
+        if final_cost > 0:
+            users_collection.update_one(
+                {"_id": user["_id"]}, 
+                {"$inc": {"coins": -final_cost}}
+            )
+            updated_user = users_collection.find_one({"_id": user["_id"]})
+            remaining_coins = updated_user["coins"]
+        else:
+            remaining_coins = user.get("coins", 0)
+
+        # D. RETURN
+        return {
+            "status": "success", 
+            "data": quiz_content,
+             "meta": {
+                "cost_deducted": final_cost,
+                "remaining_coins": remaining_coins
+            }
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
