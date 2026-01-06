@@ -98,12 +98,25 @@ function updateUserUI(userData) {
     
     if (userData) {
         guestView.classList.add('hidden');
-        userView.classList.remove('hidden'); userView.style.display = 'block';
+        userView.classList.remove('hidden'); 
+        userView.style.display = 'block';
+        
+        // Update Nama
         document.getElementById('display-name').innerText = userData.full_name;
-        document.getElementById('display-coins').innerHTML = `<i class="fa-solid fa-coins text-yellow-400"></i> ${userData.coins}`;
+        
+        // Update Koin (Cukup angkanya saja karena icon sudah ada di HTML)
+        document.getElementById('display-coins').innerText = userData.coins;
+
+        // UPDATE BARU: Buat Inisial Avatar
+        // Ambil huruf pertama dari nama, misal "Reihan" -> "R"
+        const initial = userData.full_name.charAt(0).toUpperCase();
+        const avatarEl = document.getElementById('user-avatar');
+        if(avatarEl) avatarEl.innerText = initial;
+
     } else {
         guestView.classList.remove('hidden');
-        userView.classList.add('hidden'); userView.style.display = 'none';
+        userView.classList.add('hidden'); 
+        userView.style.display = 'none';
     }
 }
 

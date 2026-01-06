@@ -3,11 +3,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EduPlan AI - Asisten Cerdas Para Pengajar</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="mapel.js"></script>
+    <style>
+        .text-yellow-500 {
+            color: #fbbf24 !important;
+        }
+
+        .text-green-500 {
+            color: #22c55e !important;
+        }
+
+        .text-slate-400 {
+            color: #94a3b8 !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -59,21 +73,41 @@
                 <p class="subtitle">Membantu Produktivitas Para Pengajar di Indonesia</p>
 
                 <div class="user-section">
-                    <div id="guest-view" class="guest-view">
-                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">Login untuk menyimpan koin & akses penuh.</p>
+                    <div id="guest-view" class="guest-view" style="padding: 20px;">
+                        <div style="width: 50px; height: 50px; background: #334155; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-user-lock text-slate-400"></i>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 15px;">
+                            Akses fitur lengkap & simpan progress Anda.
+                        </p>
                         <button class="btn-login-nav" onclick="toggleAuthModal(true)">
-                            <i class="fa-solid fa-right-to-bracket"></i> Login / Daftar
+                            Masuk Akun
                         </button>
                     </div>
 
                     <div id="user-view" class="user-view">
-                        <div class="user-header">
-                            <span class="user-name" id="display-name">Loading...</span>
-                            <button class="btn-logout" onclick="handleLogout()">Keluar</button>
+                        <div class="profile-header">
+                            <div class="avatar-circle" id="user-avatar">U</div>
+                            
+                            <div class="user-info">
+                                <span class="user-name" id="display-name">User</span>
+                                <span class="user-role">
+                                    <i class="fa-solid fa-circle-check text-green-500" style="font-size: 0.6rem;"></i> Basic Plan
+                                </span>
+                            </div>
+
+                            <button class="btn-logout-icon" onclick="handleLogout()" title="Keluar">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                            </button>
                         </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <span class="user-coins" id="display-coins"><i class="fa-solid fa-coins"></i> 0</span>
-                            <small style="color: #94a3b8; font-size: 0.7rem;">Saldo Koin</small>
+
+                        <div class="profile-stats">
+                            <span class="coin-label">Sisa Koin Anda</span>
+                            <div class="coin-badge">
+                                <i class="fa-solid fa-coins text-yellow-500"></i>
+                                <span class="coin-count" id="display-coins">0</span>
+                            </div>
+                            
                         </div>
                     </div>
                 </div>
