@@ -125,7 +125,11 @@ function checkSession() {
     const savedUser = localStorage.getItem('eduplan_user');
     if(savedToken && savedUser) {
         authToken = savedToken;
-        updateUserUI(JSON.parse(savedUser));
+        // Parsing data user dari string JSON kembali ke Objek
+        const userData = JSON.parse(savedUser);
+        
+        // Update Tampilan UI (Nama, Koin, Avatar)
+        updateUserUI(userData);
     }
 }
 
@@ -431,7 +435,11 @@ function copyToClipboard() {
 
 // --- INISIALISASI SAAT LOAD ---
 // Isi dropdown kelas saat halaman pertama kali dibuka
-setTimeout(() => {
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Isi Dropdown Kelas
     updateKelas('rpp');
     updateKelas('quiz');
-}, 100);
+
+    // 2. Cek apakah user sudah login sebelumnya?
+    checkSession(); 
+});
