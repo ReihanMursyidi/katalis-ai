@@ -12,12 +12,11 @@ MODEL_FLASH = "gemini-2.5-flash"
 class RaportRequest(BaseModel):
     nama_siswa: str
     kelas: str
-    jenis_ujian: str
     nilai_rata: float
     sikap: str
     catatan_guru: str = "" # Optional
 
-def generate_raport(request: RaportRequest, is_pro_user: bool = False) -> str:
+def generate_rapor_comment(request: RaportRequest, is_pro_user: bool = False) -> str:
     selected_model = MODEL_PRO if is_pro_user else MODEL_FLASH
 
     model = genai.GenerativeModel(selected_model)
@@ -27,7 +26,6 @@ def generate_raport(request: RaportRequest, is_pro_user: bool = False) -> str:
     Buatlah deskripsi rapor (Narasi) untuk siswa berikut:
     Nama Siswa: {request.nama_siswa}
     Kelas: {request.kelas}
-    Jenis Ujian: {request.jenis_ujian}
     Nilai Rata-rata: {request.nilai_rata}
     Sikap: {request.sikap}
     Catatan Guru: {request.catatan_guru}

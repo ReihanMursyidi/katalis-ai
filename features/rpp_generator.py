@@ -40,7 +40,7 @@ def generate_rpp(data: RPPGenerator):
 
     STRUKTUR OUTPUT (Format Markdown):
     1. **Identitas Modul**: (Rangkum info di atas)
-    2. **Profil Pelajar Pancasila**: (Pilih dimensi yang relevan dengan materi ini)
+    2. **Profil Pelajar**: (Pilih dimensi yang relevan dengan materi ini)
     3. **Media & Sumber Belajar**: (Alat, buku, link yang dibutuhkan)
     4. **Langkah Pembelajaran**:
        - Pendahuluan (Apersepsi, Pertanyaan Pemantik)
