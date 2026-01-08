@@ -5,10 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>EduPlan AI - Asisten Cerdas Para Pengajar</title>
         <script src="https://cdn.tailwindcss.com"></script>
-        
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+        <link rel="stylesheet" href="styles/modal.css">
         <style>
             body { font-family: 'Poppins', sans-serif; background-color: #0f172a; color: #f1f5f9; }
             
@@ -16,7 +15,7 @@
             .glass-nav {
                 background: rgba(15, 23, 42, 0.8);
                 backdrop-filter: blur(12px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                /* border-bottom: 1px solid rgba(255, 255, 255, 0.1); */
             }
 
             /* Gradient Text */
@@ -46,6 +45,25 @@
             .btn-glow:hover {
                 box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
             }
+
+            /* Styling Tambahan untuk Navbar User */
+            #nav-user {
+                display: flex; /* Override hidden saat aktif */
+            }
+            #nav-user.hidden {
+                display: none !important;
+            }
+
+            /* Avatar Gradient */
+            .bg-gradient-to-br {
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            }
+
+            /* Shadow Biru */
+            .shadow-blue-500\/20 {
+                box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+            }
+                    
         </style>
     </head>
     <body class="antialiased">
@@ -58,16 +76,41 @@
                         <span class="text-xl font-bold">EduPlan<span class="text-blue-400">AI</span></span>
                     </div>
                     
-                    <div class="hidden md:flex space-x-8">
+                    <div class="md:flex space-x-8">
                         <a href="#fitur" class="text-gray-300 hover:text-white transition">Fitur</a>
                         <a href="#harga" class="text-gray-300 hover:text-white transition">Harga</a>
-                        <a href="#testimoni" class="text-gray-300 hover:text-white transition">Testimoni</a>
+                        <a href="#faq" class="text-gray-300 hover:text-white transition">FAQ</a>
                     </div>
 
-                    <div>
-                        <a href="app.html" class="bg-slate-700 hover:bg-slate-600 text-white px-5 py-2 rounded-full font-medium transition border border-slate-600">
-                            Login / Masuk
-                        </a>
+                    <div class="flex items-center gap-4">
+    
+                        <div id="nav-guest">
+                            <button onclick="toggleAuthModal(true); switchAuthMode('login')" 
+                                class="bg-slate-700 hover:bg-slate-600 text-white px-5 py-2 rounded-full font-medium transition border border-slate-600 cursor-pointer text-sm">
+                                <i class="fa-solid fa-right-to-bracket"></i> Login
+                            </button>
+                        </div>
+
+                        <div id="nav-user" class="hidden flex items-center gap-3">
+                            <div class="flex items-center gap-2 pr-3 border-r border-slate-600">
+                                <div id="nav-avatar" class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                                    U
+                                </div>
+                                <div class="hidden md:block text-right">
+                                    <p id="nav-username" class="text-sm font-medium text-white leading-none">User</p>
+                                    <p class="text-[10px] text-slate-400 mt-1">Basic Plan</p>
+                                </div>
+                            </div>
+
+                            <a href="app.html" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium transition shadow-lg shadow-blue-500/20">
+                                <i class="fa-solid fa-rocket"></i> Mulai
+                            </a>
+                            
+                            <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400 transition px-2" title="Keluar">
+                                <i class="fa-solid fa-power-off"></i>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -98,8 +141,8 @@
                 </p>
 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="app.html" class="btn-glow text-white px-8 py-4 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95">
-                        Mulai Sekarang
+                    <a href="javascript:void(0)" onclick="handleStartAction()" class="btn-glow text-white px-8 py-4 rounded-xl font-bold text-lg transition flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer">
+                        Mulai Sekarang <i class="fa-solid fa-arrow-right"></i>
                     </a>
                     <a href="#fitur" class="bg-slate-800/50 hover:bg-slate-700/50 backdrop-blur text-white px-8 py-4 rounded-xl font-bold text-lg transition border border-slate-700 hover:border-slate-500">
                         Pelajari Fitur
@@ -160,7 +203,7 @@
                             <li><i class="fa-solid fa-check text-blue-500 mr-2"></i> Kecepatan Standar</li>
                             <li><i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i> Refill otomatis jika habis</li>
                         </ul>
-                        <a href="app.html" class="block w-full py-3 rounded-lg border border-slate-600 text-center hover:bg-slate-700 transition">Daftar Gratis</a>
+                        <a href="javascript:void(0)" onclick="handleStartAction()" class="block w-full py-3 rounded-lg border border-slate-600 text-center hover:bg-slate-700 transition">Daftar Gratis</a>
                     </div>
 
                     <div class="pricing-card p-8 rounded-2xl border-blue-500 relative transform md:scale-110 z-10 bg-slate-800">
@@ -204,6 +247,45 @@
             </div>
         </section>
 
+        <section id="faq" class="py-20 bg-slate-900">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">Sering Ditanyakan</h2>
+                    <p class="text-gray-400">Jawaban untuk pertanyaan yang mungkin Anda pikirkan.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <h3 class="text-white font-semibold text-lg mb-2">Apakah aplikasi ini Gratis?</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Ya! Anda bisa mendaftar secara gratis dan mendapatkan 50 Koin awal. Untuk penggunaan rutin tanpa batas, Anda bisa upgrade ke akun Pro.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <h3 class="text-white font-semibold text-lg mb-2">Apakah sesuai Kurikulum Merdeka?</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Tentu saja. AI kami dilatih untuk memahami struktur Modul Ajar, Capaian Pembelajaran (CP), dan Profil Pelajar Pancasila sesuai standar terbaru.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <h3 class="text-white font-semibold text-lg mb-2">Apakah hasil bisa diedit?</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Sangat bisa. Hasil generate berupa teks yang bisa Anda salin (Copy) ke Microsoft Word atau Google Docs untuk disesuaikan kembali.
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                        <h3 class="text-white font-semibold text-lg mb-2">Bagaimana jika Koin habis?</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">
+                            Anda tidak dapat melakukan generate sementara waktu. Anda bisa menunggu reset bulanan (jika ada promo) atau berlangganan akun Pro untuk akses unlimited.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <footer class="bg-slate-950 py-10 border-t border-slate-800">
             <div class="max-w-7xl mx-auto px-4 text-center">
                 <h2 class="text-2xl font-bold mb-4">EduPlan<span class="text-blue-500">AI</span></h2>
@@ -211,6 +293,46 @@
                 <p class="text-slate-600 text-sm">© 2026 EduPlan AI. Powered by Gemini.</p>
             </div>
         </footer>
+        <div id="auth-modal" class="modal-overlay hidden">
+            <div class="modal-box">
+                <button class="modal-close" onclick="toggleAuthModal(false)">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+                
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="tab-login" onclick="switchAuthMode('login')">Masuk</div>
+                    <div class="auth-tab" id="tab-register" onclick="switchAuthMode('register')">Daftar</div>
+                </div>
 
+                <form id="form-login" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login_email" required placeholder="nama@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login_password" required placeholder="********">
+                    </div>
+                    <button type="submit" class="btn-submit">Masuk</button>
+                </form>
+
+                <form id="form-register" class="hidden" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="reg_name" required placeholder="Pak Budi">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="reg_email" required placeholder="nama@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="reg_password" required placeholder="Buat password aman">
+                    </div>
+                    <button type="submit" class="btn-submit btn-purple">Daftar Sekarang</button>
+                </form>
+            </div>
+        </div>
+        <script src="script.js"></script>
     </body>
 </html>

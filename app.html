@@ -7,21 +7,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="mapel.js"></script>
-    <style>
-        .text-yellow-500 {
-            color: #fbbf24 !important;
-        }
+    <script src="login.js"></script>
 
-        .text-green-500 {
-            color: #22c55e !important;
-        }
-
-        .text-slate-400 {
-            color: #94a3b8 !important;
-        }
-    </style>
 </head>
 <body>
 
@@ -68,7 +58,10 @@
         <aside class="input-panel">
             <header>
                 <div class="logo">
-                    <i class="fa-solid fa-brain text-blue" style="margin-right: 0.5rem;"></i>EduPlan<span class="text-blue">AI</span>
+                    <a href="index.html">
+                        <i class="fa-solid fa-brain text-blue" style="margin-right: 0.5rem;"></i>
+                    </a>
+                    EduPlan<span class="text-blue">AI</span>
                 </div>
                 <p class="subtitle">Membantu Produktivitas Para Pengajar di Indonesia</p>
 
@@ -97,7 +90,7 @@
                             </div>
 
                             <button class="btn-logout-icon" onclick="handleLogout()" title="Keluar">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                <i class="fa-solid fa-power-off"></i>
                             </button>
                         </div>
 
@@ -107,12 +100,12 @@
                                 <i class="fa-solid fa-coins text-yellow-500"></i>
                                 <span class="coin-count" id="display-coins">0</span>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
 
                 <div class="tab-nav">
+                    
                     <button class="tab-btn active" onclick="switchTab('rpp')">
                         <i class="fa-solid fa-book-open"></i> Modul Ajar
                     </button>
@@ -291,20 +284,65 @@
                 <p style="color: var(--text-muted);">Sedang berpikir...</p>
             </div>
 
-            <div id="welcome-screen" class="placeholder-content">
-                <i class="fa-solid fa-robot big-icon"></i>
-                <h2>Halo, Pengajar Hebat!</h2>
-                <p>Silakan isi formulir di panel kiri untuk mulai.</p>
-            </div>
-
-            <div id="result-content" class="result-box hidden">
-                <div class="result-header">
-                    <h3 id="result-title"><i class="fa-solid fa-check-circle text-blue"></i>📄 Hasil Generator</h3>
-                    <button class="btn-copy" onclick="copyToClipboard()">
-                        <i class="fa-regular fa-copy"></i> Salin
+            <div id="welcome-screen" class="relative flex flex-col items-center justify-center h-full text-center p-6 animate-fade-in">
+    
+                <div class="absolute top-6 right-6 z-10">
+                    <button onclick="openHistoryMode()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-4 py-2 rounded-lg border border-slate-700 transition text-sm font-medium flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-clock-rotate-left text-blue-500"></i>
+                        <span>Buka Riwayat</span>
                     </button>
                 </div>
-                <div id="markdown-output" class="markdown-body"></div>
+
+                <div class="flex flex-col items-center max-w-lg mx-auto mt-[-40px]"> <div class="bg-slate-800/50 p-6 rounded-full w-24 h-24 flex items-center justify-center mb-6 shadow-xl border border-slate-700 relative">
+                        <div class="absolute inset-0 bg-blue-500/10 rounded-full blur-xl"></div> <i class="fa-solid fa-robot text-4xl text-blue-500 animate-bounce"></i>
+                    </div>
+
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight">
+                        Halo, Pengajar Hebat!
+                    </h2>
+                    <p class="text-gray-400 text-m leading-relaxed">
+                        Pilih fitur di panel kiri untuk mulai membuat konten pembelajaran instan.
+                    </p>
+                </div>
+
+            </div>
+
+            <div id="result-content" class="hidden h-full flex flex-col relative">
+                <div class="flex justify-between items-center mb-6 relative z-20">
+                    <h2 id="result-title" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                        Hasil Generate
+                    </h2>
+
+                    <div class="relative">
+                        <button onclick="toggleHistoryDropdown()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-4 py-2 rounded-lg transition text-sm font-medium">
+                            <i class="fa-solid fa-clock-rotate-left text-blue-400"></i>
+                            <span class="hidden md:inline">Riwayat</span>
+                            <i class="fa-solid fa-chevron-down text-xs ml-1 transition" id="history-arrow"></i>
+                        </button>
+
+                        <div id="history-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 transform origin-top-right transition-all">
+                
+                            <div class="p-3 border-b border-slate-800 bg-slate-800/50 flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Terakhir Disimpan</span>
+                                <button onclick="toggleHistoryDropdown()" class="text-slate-500 hover:text-white">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+
+                            <div id="history-list-dropdown" class="max-h-64 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                                <p class="text-xs text-center py-4 text-gray-500">Memuat...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 flex-1 overflow-y-auto custom-scrollbar shadow-inner relative">
+                    <button onclick="copyToClipboard()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-slate-700/50 hover:bg-blue-600 p-2 rounded-lg transition" title="Salin Teks">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+
+                    <div id="markdown-output" class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed"></div>
+                </div>
             </div>
         </main>
     </div>
