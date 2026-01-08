@@ -1,0 +1,493 @@
+/* =================================================================
+   APP.CSS - KHUSUS DASHBOARD (app.html)
+   ================================================================= */
+
+/* --- 1. GLOBAL & RESET --- */
+:root {
+    --bg-dark: #0f172a;      /* Slate 900 */
+    --bg-panel: #1e293b;     /* Slate 800 */
+    --border-color: #334155; /* Slate 700 */
+    --text-primary: #ffffff; /* Slate 50 */
+    --text-muted: #94a3b8;   /* Slate 400 */
+    --accent-blue: #3b82f6;  /* Blue 500 */
+    --accent-purple: #8b5cf6; /* Violet 500 */
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden; /* Mencegah scroll di body, scroll handle di panel masing-masing */
+    height: 100vh;
+    margin: 0;
+}
+
+/* --- 2. LAYOUT UTAMA --- */
+.main-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Sidebar Kiri */
+.input-panel {
+    width: 380px; /* Lebar Sidebar Tetap */
+    background-color: #111827; /* Sedikit lebih gelap dari panel utama */
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    overflow-y: auto; /* Scrollable jika form panjang */
+    flex-shrink: 0;   /* Jangan mengecil */
+    z-index: 20;
+}
+
+/* Panel Kanan (Hasil) */
+.result-panel {
+    flex: 1; /* Mengisi sisa ruang */
+    background-image: radial-gradient(#1e293b 1px, transparent 1px);
+    background-size: 20px 20px; /* Efek Dot Pattern halus */
+    background-color: var(--bg-dark);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.text-blue {
+    color: var(--accent-blue) !important; /* Menggunakan warna biru #3b82f6 */
+}
+/* --- 3. KOMPONEN SIDEBAR --- */
+
+/* Logo */
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    color: white !important;
+    align-items: center;
+}
+.logo a:hover i {
+    transform: scale(1.1);
+    transition: transform 0.2s;
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Tab Navigasi (Modul, Kuis, Rapor) */
+.tab-nav {
+    display: flex;
+    gap: 0.1rem;
+    background: var(--bg-dark);
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.23rem;
+    border: 1px solid transparent;
+}
+
+.tab-btn:hover {
+    color: white;
+    background: rgba(255,255,255,0.05);
+}
+
+.tab-btn.active {
+    background: var(--bg-panel);
+    color: var(--accent-blue);
+    border-color: var(--border-color);
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.profile-stats {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-header {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-stats {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), #8b5cf6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+}
+
+/* --- 4. FORM STYLING --- */
+.section-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 4px !important;
+    margin-bottom: 1rem;
+}
+.form-group.half {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+input, select, textarea {
+    width: 100%;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Tombol Submit Utama */
+.btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.btn-purple {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+/* Utility visibility form */
+.hidden-form { display: none; }
+.active-form { display: block; animation: fadeIn 0.3s ease-out; }
+
+/* --- 5. USER PROFILE & STATS (GRID SYSTEM) --- */
+.user-view {
+    display: none;
+}
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.user-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: white;
+    line-height: 1.2;
+}
+.user-coins {
+    font-size: 0.85rem;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.user-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-role {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.user-section {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    padding: 0; /* Padding diatur di child elements */
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 1.5rem;
+    overflow: hidden; /* Supaya border radius rapi */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    position: relative;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.stat-card {
+    background-color: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 50px;
+    transition: all 0.2s ease;
+}
+
+.stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.coin-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* INFO KOIN (BARU) */
+.coin-balance {
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.coin-count { font-weight: bold; color: #fbbf24; font-size: 0.9rem; }
+
+.coin-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251, 191, 36, 0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.coin-label {
+    font-size: 0.7rem;
+    color: #94a3b8;
+}
+
+.btn-logout-icon {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    opacity: 0.7;
+}
+.btn-logout-icon:hover {
+    background: rgba(239, 68, 68, 0.1);
+    opacity: 1;
+}
+
+/* Tombol History di Profil */
+.history-btn {
+    cursor: pointer;
+    text-align: left;
+    align-items: flex-start;
+}
+.history-btn:hover {
+    background-color: var(--border-color);
+    transform: translateY(-1px);
+}
+
+/* --- 6. WELCOME SCREEN (ROBOT & TOMBOL POJOK) --- */
+/* Penting untuk positioning tombol riwayat */
+#welcome-screen {
+    position: relative; 
+    height: 100%;
+}
+
+.robot-icon-container {
+    background-color: rgba(30, 41, 59, 0.5);
+    padding: 1.5rem;
+    border-radius: 50%;
+    width: 6rem;
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-color);
+    position: relative;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Efek Glow Biru */
+.robot-glow {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 50%;
+    filter: blur(12px);
+}
+
+/* --- 7. HASIL GENERATE & MARKDOWN --- */
+#markdown-output {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #e2e8f0;
+}
+
+/* Styling manual untuk elemen Markdown agar rapi */
+#markdown-output h1, #markdown-output h2, #markdown-output h3 {
+    color: white;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+#markdown-output h1 { font-size: 1.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+#markdown-output h2 { font-size: 1.4rem; }
+#markdown-output ul, #markdown-output ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+#markdown-output li { margin-bottom: 0.25rem; }
+#markdown-output strong { color: var(--accent-blue); }
+#markdown-output blockquote {
+    border-left: 4px solid var(--accent-blue);
+    padding-left: 1rem;
+    color: var(--text-muted);
+    font-style: italic;
+    background: rgba(59, 130, 246, 0.1);
+    padding: 10px;
+    border-radius: 0 8px 8px 0;
+}
+#markdown-output table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+#markdown-output th, #markdown-output td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
+#markdown-output th { background-color: var(--bg-panel); color: white; }
+
+/* --- 8. MODAL & OVERLAY --- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: all 0.3s;
+}
+.modal-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.modal-box {
+    background: var(--bg-panel);
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: scale(1);
+    transition: transform 0.3s;
+}
+
+/* --- 9. UTILITIES & ANIMATION --- */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Spinner Loading */
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: var(--accent-blue);
+    animation: spin 1s linear infinite;
+    margin: 0 auto 10px;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }

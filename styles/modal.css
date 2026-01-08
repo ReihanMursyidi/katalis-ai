@@ -1,0 +1,180 @@
+/* =========================================
+   CSS MODAL LENGKAP (Modern Style)
+   ========================================= */
+
+/* 1. OVERLAY (Layar Gelap Belakang) */
+.modal-overlay {
+    position: fixed;
+    inset: 0; /* Top, Right, Bottom, Left = 0 */
+    background-color: rgba(15, 23, 42, 0.75); /* Dark Slate transparan */
+    backdrop-filter: blur(8px); /* Efek Blur modern (Frosted Glass) */
+    z-index: 9999; /* Pastikan selalu paling depan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Class ini ditambahkan via JS saat modal dibuka */
+.modal-overlay:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Helper class untuk sembunyi total */
+.hidden {
+    display: none !important;
+}
+
+/* 2. KOTAK MODAL UTAMA */
+.modal-box {
+    background: #1e293b; /* Slate-800 */
+    width: 100%;
+    max-width: 400px; /* Lebar maksimal agar tidak terlalu lebar di desktop */
+    padding: 2rem;
+    border-radius: 16px;
+    border: 1px solid #334155; /* Slate-700 */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+/* Efek pop-up saat overlay aktif */
+.modal-overlay:not(.hidden) .modal-box {
+    transform: scale(1);
+}
+
+/* Tombol Close (X) di pojok kanan atas */
+.modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 5px;
+}
+.modal-close:hover {
+    color: #ef4444; /* Merah saat hover */
+}
+
+/* 3. TABS NAVIGASI (Masuk / Daftar) */
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 1.5rem;
+}
+
+.auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    cursor: pointer;
+    color: #94a3b8; /* Text muted */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.auth-tab:hover {
+    color: #e2e8f0;
+}
+
+/* State Aktif */
+.auth-tab.active {
+    color: #3b82f6; /* Biru terang */
+    font-weight: 600;
+}
+
+/* Garis bawah biru bergerak */
+.auth-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #3b82f6;
+    border-radius: 2px 2px 0 0;
+}
+
+/* 4. FORM ELEMENTS (Input & Label) */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: #cbd5e1; /* Slate-300 */
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    background-color: #0f172a; /* Darker bg input */
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Glow biru halus */
+}
+
+/* Tombol Submit Utama */
+.btn-submit {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+/* Variasi Warna Tombol (Ungu untuk Register) */
+.btn-purple {
+    background: linear-gradient(135deg, #9333ea, #db2777);
+}
+.btn-purple:hover {
+    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
+}
+
+/* 5. ANIMASI TRANSISI FORM */
+.form-animate {
+    animation: fadeSlideUp 0.4s ease-out forwards;
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
