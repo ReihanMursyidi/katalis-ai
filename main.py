@@ -4,6 +4,7 @@ from features.rpp_generator import RPPGenerator, generate_rpp
 from features.quiz_generator import QuizRequest, generate_quiz_content
 from features.admin_generator import RaportRequest, generate_rapor_comment
 from database import check_db_connection, users_collection
+from database import db
 from security import verify_password, get_password_hash, create_access_token
 from pydantic import BaseModel
 from datetime import datetime, timedelta
@@ -12,6 +13,14 @@ import os
 from jose import jwt, JWTError # PENTING: Untuk decode token
 from dotenv import load_dotenv
 import uvicorn
+
+histories_collection = db["histories"]
+
+try:
+    histories_collection.create_index("expires_at", expireAfterSeconds=0)
+    print("✅ Index TTL untuk koleksi histories berhasil dibuat.")
+except Exception as e:
+    print(f"❌ Gagal membuat index TTL untuk koleksi histories: {e}")
 
 # Load Env untuk ambil SECRET_KEY
 load_dotenv()
@@ -193,21 +202,48 @@ async def endpoint_quiz(request: QuizRequest, authorization: str = Header(None))
 
 # --- HISTORY HELPER ---
 def save_history(user_id, type, title, content, is_pro):
+    expire_date = None if is_pro else datetime.utcnow() + timedelta(days=30)
+
     history_data = {
         "user_id": ObjectId(user_id),
         "type": type,
         "title": title,
         "content": content,
         "created_at": datetime.utcnow(),
-        "expires_at": None if is_pro else datetime.utcnow() + timedelta(days=30)
+        "expires_at": expire_date
     }
-    # Jika punya collection history, uncomment baris bawah:
-    # db.history.insert_one(history_data)
+    
+    histories_collection.insert_one(history_data)
     print(f"✅ History disimpan. Expired: {history_data['expires_at']}")
+
+# ENDPOINT HISTORY
+@app.get("/api/history")
+async def get_history(authorization: str = Header(None)):
+    user = get_user_from_token(authorization)
+    
+    cursors = histories_collection.find(
+        {"user_id": user["_id"]}
+    ).sort("created_at", -1).limit(20)
+    
+    history_list = []
+    for doc in cursors:
+        # Konversi ObjectId ke String agar bisa jadi JSON
+        doc["_id"] = str(doc["_id"])
+        doc["user_id"] = str(doc["user_id"])
+        
+        # Format tanggal agar enak dibaca frontend
+        doc["date_display"] = doc["created_at"].strftime("%d %b %Y")
+        
+        # Hapus field konten panjang agar loading cepat (ambil pas diklik saja)
+        # Atau kirim saja kalau tidak terlalu besar. Kita kirim saja.
+        
+        history_list.append(doc)
+        
+    return {"status": "success", "data": history_list}
 
 # --- ENDPOINT RAPORT GENERATOR ---
 @app.post("/api/generate-rapor")
-async def endpoint_rapor(request: RaporRequest, authorization: str = Header(None)):
+async def endpoint_rapor(request: RaportRequest, authorization: str = Header(None)):
     user = get_user_from_token(authorization)
 
     is_pro = user.get("is_pro", False)
@@ -253,4 +289,5 @@ async def endpoint_rapor(request: RaporRequest, authorization: str = Header(None
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
+
     uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True)
