@@ -7,10 +7,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="styles/app.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles/app.css">
     <script src="mapel.js"></script>
     <script src="login.js"></script>
+
+    <style>
+        /* --- GLOBAL FIX --- */
+        :root { --accent-blue: #3b82f6; --bg-dark: #0f172a; --bg-panel: #1e293b; --border-color: #334155; --text-muted: #94a3b8; }
+
+        /* --- LAYOUT FIX --- */
+        .main-container { display: flex; height: 100vh; width: 100vw; }
+        
+        
+
+        /* --- FORM FIX (ANTI MENGECIL) --- */
+        .form-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; width: 100% !important; margin-bottom: 1rem; }
+        .form-group.half { width: 100% !important; min-width: 0; margin: 0; }
+        .form-group select, .form-group input { width: 100% !important; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 8px; border-radius: 6px; color: white; display: block; box-sizing: border-box; }
+        .form-group { margin-bottom: 1rem; }
+        .hidden-form { display: none !important; }
+        .active-form { display: block !important; animation: fadeIn 0.3s; }
+        
+        /* --- LOGO FIX --- */
+        .logo { color: white !important; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; margin-bottom: 10px; }
+        .text-blue { color: var(--accent-blue) !important; }
+        
+        /* --- PROFILE STATS FIX --- */
+        .profile-stats {
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .coin-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        .coin-count { font-weight: bold; color: #fbbf24; }
+        
+        /* --- ANIMASI --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
 
 </head>
 <body>
@@ -120,6 +164,7 @@
 
             <form id="form-rpp" class="active-form">
                 <p class="section-label">Konfigurasi RPP</p>
+
                 <div class="form-row">
                     <div class="form-group half">
                         <label>Jenjang</label>
@@ -148,18 +193,49 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Materi Utama</label>
-                    <input type="text" id="rpp_materi" placeholder="Cth: Ekosistem" min="10" max="50">
+                    <label>Kompetensi Inti (KI)</label>
+                    <textarea id="rpp_ki" rows="3" placeholder="KI-1: Menghayati dan mengamalkan...&#10;KI-2: ...&#10;KI-3: ...&#10;KI-4: ..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Capaian Pembelajaran</label>
-                    <textarea id="rpp_capaian" rows="2" placeholder="Siswa memahami..." min="10" max="100"></textarea>
+                    <label>Kompetensi Dasar (KD)</label>
+                    <textarea id="rpp_kd" rows="3" placeholder="3.1 Memahami konsep...&#10;4.1 Menyajikan hasil..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Durasi</label>
-                    <input type="text" id="rpp_durasi" placeholder="Cth: 2 x 45 Menit" min="1" max="20">
+                    <label>Materi Pokok</label>
+                    <input type="text" id="rpp_materi" maxlength="100" placeholder="Cth: Teks Prosedur Kompleks (Maks 100 karakter)">
+                    <p style="font-size: 0.7rem; color: #64748b; margin-top: 4px;">*Maksimal 100 karakter</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Model Pembelajaran</label>
+                    <select id="rpp_model">
+                        <option value="Problem Based Learning (PBL)">Problem Based Learning (PBL)</option>
+                        <option value="Project Based Learning (PjBL)">Project Based Learning (PjBL)</option>
+                        <option value="Discovery Learning">Discovery Learning</option>
+                        <option value="Inquiry Learning">Inquiry Learning</option>
+                        <option value="Cooperative Learning">Cooperative Learning</option>
+                        <option value="Contextual Teaching and Learning">Contextual Teaching and Learning (CTL)</option>
+                        <option value="Saintifik (5M)">Pendekatan Saintifik (5M)</option>
+                        <option value="Diskusi & Tanya Jawab">Diskusi & Tanya Jawab (Konvensional)</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Jumlah JP</label>
+                        <input type="number" id="rpp_jp" placeholder="2" min="1" max="10">
+                    </div>
+                    <div class="form-group half">
+                        <label>Durasi per JP (Menit)</label>
+                        <select id="rpp_durasi_jp">
+                            <option value="35">35 Menit (SD)</option>
+                            <option value="40">40 Menit (SMP)</option>
+                            <option value="45" selected>45 Menit (SMA/SMK)</option>
+                            <option value="60">60 Menit</option>
+                        </select>
+                    </div>
                 </div>
 
                 <button type="button" onclick="generateRPP()" class="btn-submit">
@@ -222,7 +298,7 @@
                     </select>
                 </div>
 
-                <button type="button" onclick="generateQuiz()" class="btn-submit btn-purple">
+                <button type="button" onclick="generateQuiz()" class="btn-submit">
                     <i class="fa-solid fa-puzzle-piece"></i> Buat Soal (10 Koin)
                 </button>
             </form>
@@ -264,7 +340,7 @@
                     <textarea id="rapor_catatan" rows="2" placeholder="Cth: Sering tidak mengerjakan PR, tapi jago olahraga..."></textarea>
                 </div>
 
-                <button type="button" onclick="generateRapor()" class="btn-submit btn-purple">
+                <button type="button" onclick="generateRapor()" class="btn-submit">
                     <i class="fa-solid fa-feather"></i> Buat Narasi (30 Koin)
                 </button>
             </form>
@@ -308,11 +384,12 @@
             </div>
 
             <div id="result-content" class="hidden h-full flex flex-col relative">
+    
                 <div class="flex justify-between items-center mb-6 relative z-20">
                     <h2 id="result-title" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
                         Hasil Generate
                     </h2>
-
+                    
                     <div class="relative">
                         <button onclick="toggleHistoryDropdown()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-4 py-2 rounded-lg transition text-sm font-medium">
                             <i class="fa-solid fa-clock-rotate-left text-blue-400"></i>
@@ -321,7 +398,6 @@
                         </button>
 
                         <div id="history-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 transform origin-top-right transition-all">
-                
                             <div class="p-3 border-b border-slate-800 bg-slate-800/50 flex justify-between items-center">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Terakhir Disimpan</span>
                                 <button onclick="toggleHistoryDropdown()" class="text-slate-500 hover:text-white">
@@ -337,16 +413,54 @@
                 </div>
 
                 <div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 flex-1 overflow-y-auto custom-scrollbar shadow-inner relative">
-                    <button onclick="copyToClipboard()" class="absolute top-4 right-4 text-gray-400 hover:text-white bg-slate-700/50 hover:bg-blue-600 p-2 rounded-lg transition" title="Salin Teks">
-                        <i class="fa-solid fa-copy"></i>
-                    </button>
+                    
+                    <div class="absolute top-4 right-4 flex items-center gap-2 z-10">
+                        <button onclick="copyToClipboard()" class="bg-slate-700/50 hover:bg-slate-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg transition border border-slate-600 flex items-center gap-2 text-xs font-medium" title="Salin Teks">
+                            <i class="fa-regular fa-copy"></i>
+                            <span class="hidden sm:inline">Salin</span>
+                        </button>
 
+                        <div class="relative">
+                            <button onclick="toggleExportDropdown()" id="btn-export-trigger" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3 py-2 rounded-lg transition border border-blue-500/30 flex items-center gap-2 text-xs font-medium">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Download</span>
+                                <i class="fa-solid fa-chevron-down text-[10px] ml-1 transition" id="export-arrow"></i>
+                            </button>
+
+                            <div id="export-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 overflow-hidden origin-top-right">
+                                <div class="px-4 py-2 bg-slate-900/50 border-b border-slate-700 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                    Pilih Format
+                                </div>
+                                <button onclick="exportToWord(); toggleExportDropdown()" class="w-full text-left px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-3 transition group">
+                                    <div class="w-6 h-6 rounded bg-blue-900/50 text-blue-400 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition">
+                                        <i class="fa-solid fa-file-word"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-medium">Microsoft Word</span>
+                                        <span class="text-[10px] text-slate-500 group-hover:text-slate-400">.docx Document</span>
+                                    </div>
+                                </button>
+                                <button onclick="exportToPDF(); toggleExportDropdown()" class="w-full text-left px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-700 flex items-center gap-3 transition group border-t border-slate-700/50">
+                                    <div class="w-6 h-6 rounded bg-red-900/50 text-red-400 flex items-center justify-center group-hover:bg-red-600 group-hover:text-white transition">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-medium">PDF Document</span>
+                                        <span class="text-[10px] text-slate-500 group-hover:text-slate-400">Siap Cetak</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <div id="markdown-output" class="prose prose-invert max-w-none text-gray-300 text-sm leading-relaxed"></div>
                 </div>
             </div>
         </main>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="export.js"></script>
     <script src="script.js"></script>
+    
 </body>
 </html>

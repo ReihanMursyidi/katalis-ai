@@ -1,4 +1,4 @@
-const BASE_URL = "https://reihanmursyidi-guru-ai.hf.space";
+const BASE_URL = "http://127.0.0.1:8000";
 
 let authToken = localStorage.getItem('eduplan_token'); 
 
@@ -127,51 +127,65 @@ function handleLogout() {
 }
 
 function updateUserUI(userData) {
-    // --- LOGIKA HALAMAN APLIKASI (app.html) ---
+
     const appGuest = document.getElementById('guest-view');
     const appUser = document.getElementById('user-view');
     
-    // Cek dulu: Apakah kita sedang di app.html? (Elemennya ada gak?)
+    // Cek: Apakah elemen app.html ada?
     if (appGuest && appUser) {
         if (userData) {
             appGuest.classList.add('hidden');
             appUser.classList.remove('hidden'); 
-            appUser.style.display = 'block';
+            appUser.style.display = 'block'; // Paksa tampil
             
-            document.getElementById('display-name').innerText = userData.full_name;
-            document.getElementById('display-coins').innerText = userData.coins;
+            // Update Teks Nama & Koin
+            const displayName = document.getElementById('display-name');
+            const displayCoins = document.getElementById('display-coins');
+            if(displayName) displayName.innerText = userData.full_name;
+            if(displayCoins) displayCoins.innerText = userData.coins;
             
-            const initial = userData.full_name.charAt(0).toUpperCase();
+            // Update Avatar (FIX BUG DISINI)
             const avatarEl = document.getElementById('user-avatar');
-            if(avatarEl) avatarEl.innerText = initial;
+            if(avatarEl) {
+                // Gunakan variabel 'avatarEl', BUKAN 'navAvatar'
+                avatarEl.innerText = userData.full_name.charAt(0).toUpperCase();
+                
+                // Pastikan fungsi getAvatarColor ada
+                if (typeof getAvatarColor === "function") {
+                    avatarEl.style.background = getAvatarColor(userData.full_name);
+                }
+            }
         } else {
+            // Mode Tamu
             appGuest.classList.remove('hidden');
             appUser.classList.add('hidden'); 
             appUser.style.display = 'none';
         }
     }
 
-    // --- LOGIKA HALAMAN LANDING (index.html) ---
     const navGuest = document.getElementById('nav-guest');
     const navUser = document.getElementById('nav-user');
-    
-    // Cek dulu: Apakah kita sedang di index.html?
+
     if (navGuest && navUser) {
         if (userData) {
-            // Sembunyikan tombol Login, Munculkan Profil
             navGuest.classList.add('hidden');
             navUser.classList.remove('hidden');
             
-            // Update Nama di Navbar
+            // Update Nama Navbar
             const navName = document.getElementById('nav-username');
-            if(navName) navName.innerText = userData.full_name.split(' ')[0]; // Ambil nama depan saja
+            if(navName) navName.innerText = userData.full_name.split(' ')[0];
             
             // Update Avatar Navbar
             const navAvatar = document.getElementById('nav-avatar');
-            if(navAvatar) navAvatar.innerText = userData.full_name.charAt(0).toUpperCase();
+            if(navAvatar) {
+                navAvatar.innerText = userData.full_name.charAt(0).toUpperCase();
+               
+                if (typeof getAvatarColor === "function") {
+                    navAvatar.style.background = getAvatarColor(userData.full_name);
+                }
+            }
             
         } else {
-            // Kembali ke tampilan tamu
             navGuest.classList.remove('hidden');
             navUser.classList.add('hidden');
         }
@@ -424,13 +438,19 @@ function generateRPP() {
         jenjang: document.getElementById('rpp_jenjang').value,
         kelas: "Kelas " + document.getElementById('rpp_kelas').value,
         mapel: mapelFinal,
+        ki: document.getElementById('rpp_ki').value,           // BARU
+        kd: document.getElementById('rpp_kd').value,           // BARU
         materi: document.getElementById('rpp_materi').value,
-        capaian: document.getElementById('rpp_capaian').value,
-        durasi: document.getElementById('rpp_durasi').value
+        model_pembelajaran: document.getElementById('rpp_model').value, // BARU
+        jumlah_jp: parseInt(document.getElementById('rpp_jp').value) || 2, // BARU
+        durasi_per_jp: parseInt(document.getElementById('rpp_durasi_jp').value) || 45 // BARU
     };
 
     // Validasi
-    if(!data.materi || !mapelFinal) { alert("Lengkapi data!"); return; }
+    if(!data.materi || !mapelFinal || !data.kd) { 
+        alert("Mohon lengkapi data (Mapel, KD, dan Materi wajib diisi)!"); 
+        return; 
+    }
     
     // Ubah judul hasil & Panggil API
     document.getElementById('result-title').innerHTML = `<i class="fa-solid fa-book-open text-blue"></i> Modul Ajar (${data.mapel})`;
@@ -452,6 +472,7 @@ function generateQuiz() {
     const data = {
         jenjang: document.getElementById('quiz_jenjang').value,
         kelas: "Kelas " + document.getElementById('quiz_kelas').value,
+        mapel: mapelFinal,
         topik: topikLengkap,
         jumlah_soal: parseInt(document.getElementById('quiz_jumlah').value),
         jenis_soal: document.getElementById('quiz_jenis').value,
@@ -519,17 +540,51 @@ function toggleHistoryDropdown() {
     }
 }
 
-// Tutup dropdown jika klik di luar area
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('history-dropdown');
-    const button = event.target.closest('button'); // Cek apakah yang diklik itu tombol history
+// --- LOGIKA DROPDOWN EXPORT (UI SAJA) ---
+function toggleExportDropdown() {
+    const dropdown = document.getElementById('export-dropdown');
+    const arrow = document.getElementById('export-arrow');
     
-    // Jika yang diklik BUKAN dropdown DAN BUKAN tombol pemicunya
-    if (!event.target.closest('#history-dropdown') && (!button || !button.contains(document.getElementById('history-arrow')))) {
-        if(dropdown && !dropdown.classList.contains('hidden')) {
-            dropdown.classList.add('hidden');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+        
+        // Animasi Panah
+        if(arrow) {
+            if (dropdown.classList.contains('hidden')) {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+    }
+}
+
+// --- GLOBAL CLICK LISTENER (Tutup dropdown saat klik di luar) ---
+document.addEventListener('click', function(event) {
+    
+    // 1. Handle HISTORY Dropdown
+    const historyDropdown = document.getElementById('history-dropdown');
+    const historyBtn = event.target.closest('button[onclick="toggleHistoryDropdown()"]'); 
+    
+    if (historyDropdown && !historyDropdown.classList.contains('hidden')) {
+        // Jika yang diklik BUKAN dropdown DAN BUKAN tombol history
+        if (!historyDropdown.contains(event.target) && !historyBtn) {
+            historyDropdown.classList.add('hidden');
             const arrow = document.getElementById('history-arrow');
             if(arrow) arrow.classList.remove('rotate-180');
+        }
+    }
+
+    // 2. Handle EXPORT Dropdown (INI YANG BARU)
+    const exportDropdown = document.getElementById('export-dropdown');
+    const exportBtn = document.getElementById('btn-export-trigger');
+    
+    if (exportDropdown && !exportDropdown.classList.contains('hidden')) {
+        // Jika yang diklik BUKAN dropdown DAN BUKAN tombol export
+        if (!exportDropdown.contains(event.target) && (!exportBtn || !exportBtn.contains(event.target))) {
+            exportDropdown.classList.add('hidden');
+            const arrow = document.getElementById('export-arrow');
+            if(arrow) arrow.style.transform = 'rotate(0deg)';
         }
     }
 });
@@ -632,6 +687,34 @@ function openHistoryMode() {
 function copyToClipboard() {
     const text = document.getElementById('markdown-output').innerText;
     navigator.clipboard.writeText(text).then(() => alert("Teks berhasil disalin!"));
+}
+
+function getAvatarColor(name) {
+    // Daftar warna-warni keren (Tailwind Palette)
+    const colors = [
+        'linear-gradient(135deg, #ef4444, #b91c1c)', // Red
+        'linear-gradient(135deg, #f97316, #c2410c)', // Orange
+        'linear-gradient(135deg, #f59e0b, #b45309)', // Amber
+        'linear-gradient(135deg, #84cc16, #4d7c0f)', // Lime
+        'linear-gradient(135deg, #10b981, #047857)', // Emerald
+        'linear-gradient(135deg, #06b6d4, #0e7490)', // Cyan
+        'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Blue
+        'linear-gradient(135deg, #6366f1, #4338ca)', // Indigo
+        'linear-gradient(135deg, #8b5cf6, #6d28d9)', // Violet
+        'linear-gradient(135deg, #d946ef, #a21caf)', // Fuchsia
+        'linear-gradient(135deg, #f43f5e, #be123c)'  // Rose
+    ];
+
+    // Hitung "kode unik" dari nama user agar warnanya konsisten
+    // (Misal: User "Budi" akan selalu dapat warna Hijau, tidak berubah-ubah)
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    
+    // Pilih warna berdasarkan kode unik tadi
+    const index = Math.abs(hash % colors.length);
+    return colors[index];
 }
 
 // --- INISIALISASI SAAT LOAD ---

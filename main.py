@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
 from features.rpp_generator import RPPGenerator, generate_rpp
 from features.quiz_generator import QuizRequest, generate_quiz_content
 from features.admin_generator import RaportRequest, generate_rapor_comment
+from features.pdf_generator import create_pdf_bytes
 from database import check_db_connection, users_collection
 from database import db
 from security import verify_password, get_password_hash, create_access_token
@@ -10,6 +12,7 @@ from pydantic import BaseModel
 from datetime import datetime, timedelta
 from bson import ObjectId
 import os
+import io
 from jose import jwt, JWTError # PENTING: Untuk decode token
 from dotenv import load_dotenv
 import uvicorn
@@ -153,6 +156,16 @@ async def endpoint_rpp(request: RPPGenerator, authorization: str = Header(None))
         else:
             remaining_coins = user.get("coins", 0)
 
+        judul_history = f"Modul Ajar {request.mapel} - {request.materi}"
+
+        save_history(
+            user_id=user["_id"],
+            type="rpp",
+            title=judul_history,
+            content=rpp_content,
+            is_pro=is_pro
+        )
+
         return {
             "status": "success", 
             "data": rpp_content,
@@ -188,6 +201,25 @@ async def endpoint_quiz(request: QuizRequest, authorization: str = Header(None))
             remaining_coins = updated_user["coins"]
         else:
             remaining_coins = user.get("coins", 0)
+
+        clean_topik = request.topik.strip()
+
+        if request.mapel.lower() in clean_topik.lower():
+            clean_topik = clean_topik.lower().replace(request.mapel.lower(), "").strip()
+            clean_topik = clean_topik.lstrip(":- ").title()
+        
+        if not clean_topik:
+             judul_history = f"Latihan Soal {request.mapel}"
+        else:
+             judul_history = f"Soal {request.mapel} - {clean_topik}"
+        
+        save_history(
+            user_id=user["_id"],
+            type="quiz",
+            title=judul_history,
+            content=quiz_content,
+            is_pro=is_pro
+        )
 
         return {
             "status": "success", 
@@ -288,6 +320,22 @@ async def endpoint_rapor(request: RaportRequest, authorization: str = Header(Non
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
+class ExportRequest(BaseModel):
+    title: str
+    content: str
 
-    uvicorn.run("main:app", host="0.0.0.0", port=7860, reload=True)
+@app.post("/api/export-pdf")
+async def export_pdf_endpoint(request: ExportRequest):
+    try:
+        pdf_bytes = create_pdf_bytes(request.title, request.content)
+
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename={request.title}.pdf"}
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Gagal membuat PDF: {str(e)}")
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

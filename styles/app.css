@@ -32,7 +32,7 @@ body {
 /* Sidebar Kiri */
 .input-panel {
     width: 380px; /* Lebar Sidebar Tetap */
-    background-color: #111827; /* Sedikit lebih gelap dari panel utama */
+    background-color: var(--bg-dark);/* Sedikit lebih gelap dari panel utama */
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -194,7 +194,7 @@ input, select, textarea {
     color: white;
     padding: 0.6rem 0.8rem;
     border-radius: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.9rem !important;
     transition: all 0.2s;
     outline: none;
 }
@@ -207,12 +207,12 @@ input:focus, select:focus, textarea:focus {
 /* Tombol Submit Utama */
 .btn-submit {
     width: 100%;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, #3b82f6, #225ee0);
     color: white;
     border: none;
     padding: 12px;
     border-radius: 8px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     margin-top: 1rem;
     transition: transform 0.2s, box-shadow 0.2s;
@@ -227,13 +227,13 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
-.btn-purple {
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
 /* Utility visibility form */
 .hidden-form { display: none; }
 .active-form { display: block; animation: fadeIn 0.3s ease-out; }
+
+.hidden {
+    display: none !important;
+}
 
 /* --- 5. USER PROFILE & STATS (GRID SYSTEM) --- */
 .user-view {
@@ -402,11 +402,29 @@ input:focus, select:focus, textarea:focus {
     filter: blur(12px);
 }
 
+.html2pdf__container {
+    background-color: white !important;
+    color: black !important;
+}
+
 /* --- 7. HASIL GENERATE & MARKDOWN --- */
 #markdown-output {
     font-size: 0.95rem;
     line-height: 1.7;
     color: #e2e8f0;
+    background-color: transparent;
+}
+
+#markdown-output ol { 
+    list-style-type: decimal; /* Munculkan angka 1, 2, 3 */
+    margin-left: 1.5rem; 
+    margin-bottom: 1rem; 
+}
+
+#markdown-output ul { 
+    list-style-type: disc; /* Munculkan bullet points */
+    margin-left: 1.5rem; 
+    margin-bottom: 1rem; 
 }
 
 /* Styling manual untuk elemen Markdown agar rapi */
@@ -419,7 +437,7 @@ input:focus, select:focus, textarea:focus {
 #markdown-output h1 { font-size: 1.8rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
 #markdown-output h2 { font-size: 1.4rem; }
 #markdown-output ul, #markdown-output ol { margin-left: 1.5rem; margin-bottom: 1rem; }
-#markdown-output li { margin-bottom: 0.25rem; }
+#markdown-output li { margin-bottom: 0.25rem; padding-left: 0.5rem;}
 #markdown-output strong { color: var(--accent-blue); }
 #markdown-output blockquote {
     border-left: 4px solid var(--accent-blue);
@@ -491,3 +509,44 @@ input:focus, select:focus, textarea:focus {
     margin: 0 auto 10px;
 }
 @keyframes spin { 100% { transform: rotate(360deg); } }
+
+.pdf-mode {
+    background-color: white !important;
+    color: black !important;
+    font-family: 'Times New Roman', Times, serif; /* Font formal */
+    font-size: 12pt !important;
+    line-height: 1.3 !important; /* Jarak antar baris lebih rapat */
+    padding: 20px !important;
+    width: 100% !important;
+}
+
+.pdf-mode h1 { font-size: 18pt !important; font-weight: bold; border-bottom: 2px solid black; padding-bottom: 5px; margin-bottom: 15px !important; }
+.pdf-mode h2 { font-size: 14pt !important; font-weight: bold; margin-top: 15px !important; color: #000 !important; }
+.pdf-mode strong { font-weight: bold !important; color: #000 !important; }
+
+.pdf-mode ul, .pdf-mode ol { 
+    padding-left: 25px !important; 
+    margin-left: 0 !important;
+}
+.pdf-mode li {
+    list-style-type: inherit !important; /* Paksa munculkan bullet/angka */
+    margin-bottom: 4px !important;
+}
+
+.pdf-mode li, 
+.pdf-mode h1, 
+.pdf-mode h2, 
+.pdf-mode p,
+.pdf-mode tr,
+.pdf-mode blockquote {
+    page-break-inside: avoid !important; /* Jangan potong di tengah elemen */
+    break-inside: avoid !important;
+}
+
+.pdf-mode h1 {
+    page-break-before: always;
+}
+/* Kecuali judul pertama */
+.pdf-mode h1:first-child {
+    page-break-before: auto;
+}

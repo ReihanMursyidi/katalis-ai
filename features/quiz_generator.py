@@ -9,32 +9,43 @@ api_key = os.getenv("GOOGLE_API_KEY")
 
 # Konfigurasi Gemini
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel(
-    model_name="gemini-2.5-flash",
-    system_instruction="""
-    Bertindaklah sebagai Guru Profesional pembuat soal ujian. 
-    Tugasmu adalah membuat daftar soal kuis yang berkualitas, sesuai kurikulum di Indonesia, 
-    dan akurat secara akademik.
-    Sekolah di Indonesia menggunakan Kurikulum 2013 (K-13) dan Kurikulum Merdeka secara bersamaan.
-    """
-)
+
+MODEL_PRO = "gemini-2.5-pro"
+MODEL_FLASH = "gemini-2.5-flash"
+
+
+SYSTEM_INSTRUCTION = """
+Bertindaklah sebagai Guru Profesional pembuat soal ujian. 
+Tugasmu adalah membuat daftar soal kuis yang berkualitas, sesuai kurikulum di Indonesia, 
+dan akurat secara akademik.
+Sekolah di Indonesia menggunakan Kurikulum 2013 (K-13) dan Kurikulum Merdeka secara bersamaan.
+"""
 
 # Model Data Input (Harus sama dengan yang dikirim dari Frontend script.js)
 class QuizRequest(BaseModel):
     jenjang: str
     kelas: str
+    mapel: str
     topik: str
     jumlah_soal: int
     jenis_soal: str = Field(..., description="Pilihan Ganda atau Essay")
     kesulitan: str = Field(..., description="Mudah, Sedang, atau Sulit")
 
-def generate_quiz_content(data: QuizRequest):
+def generate_quiz_content(data: QuizRequest, is_pro_user: bool = False):
+    selected_model = MODEL_PRO if is_pro_user else MODEL_FLASH
+
+    model = genai.GenerativeModel(
+        model_name=selected_model,
+        system_instruction=SYSTEM_INSTRUCTION
+    )
+
     # Prompt Engineering Khusus Soal
     prompt = f"""
     Buatkan Soal Kuis dengan spesifikasi berikut:
     
     - Jenjang: {data.jenjang}
     - Kelas: {data.kelas}
+    - Mata Pelajaran: {data.mapel}
     - Jumlah Soal: {data.jumlah_soal}
     - Jenis Soal: {data.jenis_soal}
     - Tingkat Kesulitan: {data.kesulitan}
@@ -55,8 +66,10 @@ def generate_quiz_content(data: QuizRequest):
     1. Judul Kuis (Topik & Kelas)
     2. Daftar Soal (Nomor 1 sampai {data.jumlah_soal})
        - Jika Pilihan Ganda: Berikan opsi A, B, C, D (dan E jika SMA).
-    3. Kunci Jawaban & Pembahasan (Letakkan di bagian paling bawah, terpisah garis).
-    4. Gunakan standar penyusunan soal yang baik dan benar sesuai kurikulum di Indonesia.
+       - WAJIB menggunakan penomoran otomatis (1., 2., 3.) untuk daftar soal.
+    3. Berikan format output dalam Markdown.
+    4. Kunci Jawaban & Pembahasan (Letakkan di bagian paling bawah, terpisah garis).
+    5. Gunakan standar penyusunan soal yang baik dan benar sesuai kurikulum di Indonesia.
     
     Pastikan bahasa soal jelas, tidak ambigu, dan sesuai dengan tingkat kesulitan {data.kesulitan}.
     """
