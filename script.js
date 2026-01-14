@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = "https://reihanmursyidi-guru-ai.hf.space";
 
 let authToken = localStorage.getItem('eduplan_token'); 
 
@@ -731,4 +731,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Log untuk memastikan script jalan
     console.log("EduPlan AI Ready 🚀");
     
+
 });
