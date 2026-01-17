@@ -14,6 +14,7 @@
 }
 
 /* --- CUSTOM SCROLLBAR STYLING --- */
+        
 /* 1. Untuk Browser berbasis Webkit (Chrome, Edge, Safari) */
 ::-webkit-scrollbar {
     width: 8px;
@@ -62,7 +63,7 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
-    overflow: hidden; /* Mencegah scroll di body, scroll handle di panel masing-masing */
+    overflow: hidden;
     height: 100vh;
     margin: 0;
 }
@@ -594,5 +595,62 @@ input:focus, select:focus, textarea:focus {
 /* Kecuali judul pertama */
 .pdf-mode h1:first-child {
     page-break-before: auto;
+}
 
+@media (max-width: 768px) {
+            
+    /* 1. Ubah Layout jadi Atas-Bawah */
+    .main-container {
+        flex-direction: column; /* Panel Input di atas, Hasil di bawah */
+        height: auto !important; /* Biarkan memanjang ke bawah (scroll) */
+        overflow-x: hidden; /* Cegah geser samping */
+    }
+
+    /* 2. Styling Panel Input (Atas) */
+    .input-panel {
+        width: 100% !important; /* Lebar penuh */
+        height: auto !important;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 2rem;
+    }
+
+    /* 3. Styling Panel Hasil (Bawah) */
+    .result-panel {
+        width: 100% !important;
+        height: 800px; /* Beri tinggi cukup agar nyaman dibaca */
+        min-height: 50vh;
+    }
+
+    /* 4. Fix Form 2 Kolom jadi 1 Kolom */
+    /* Kita pakai !important untuk menimpa rule .form-row sebelumnya */
+    .form-row {
+        grid-template-columns: 1fr !important; 
+    }
+
+    /* 5. Header & Tab Navigasi */
+    .logo {
+        font-size: 1.2rem; /* Perkecil logo sedikit */
+    }
+    
+    .tab-nav {
+        overflow-x: auto; /* Agar tab bisa digeser jika layar sangat kecil */
+        white-space: nowrap;
+        padding-bottom: 5px;
+    }
+    
+    .tab-btn {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+    }
+
+    /* 6. Sembunyikan elemen yang kurang penting di HP */
+    .subtitle {
+        display: none; /* Hemat tempat header */
+    }
+    
+    /* 7. Profil User */
+    .profile-header {
+        padding: 10px;
+    }
 }
