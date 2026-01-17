@@ -598,28 +598,37 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 768px) {
+
+    html, body {
+        overflow-y: auto !important; /* Izinkan scroll vertikal */
+        height: auto !important;     /* Tinggi mengikuti isi konten */
+        overscroll-behavior-y: none; /* Mencegah efek 'bounce' berlebih di Chrome Android */
+    }
             
     /* 1. Ubah Layout jadi Atas-Bawah */
     .main-container {
-        flex-direction: column; /* Panel Input di atas, Hasil di bawah */
-        height: auto !important; /* Biarkan memanjang ke bawah (scroll) */
-        overflow-x: hidden; /* Cegah geser samping */
+        display: block !important;    /* Ubah dari flex ke block biasa */
+        height: auto !important;      /* Biarkan memanjang */
+        width: 100%;
+        overflow: visible !important; /* Tampilkan semua isinya */
     }
 
     /* 2. Styling Panel Input (Atas) */
     .input-panel {
-        width: 100% !important; /* Lebar penuh */
-        height: auto !important;
-        border-right: none;
-        border-bottom: 1px solid var(--border-color);
+        width: 100% !important;
+        height: auto !important;      /* Jangan dibatasi tingginya */
+        overflow: visible !important; /* Matikan scroll internal, pakai scroll halaman saja */
         padding-bottom: 2rem;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border-color);
     }
 
     /* 3. Styling Panel Hasil (Bawah) */
     .result-panel {
         width: 100% !important;
-        height: 800px; /* Beri tinggi cukup agar nyaman dibaca */
-        min-height: 50vh;
+        height: auto !important;
+        min-height: 500px;
+        overflow: visible !important;
     }
 
     /* 4. Fix Form 2 Kolom jadi 1 Kolom */
@@ -648,9 +657,8 @@ input:focus, select:focus, textarea:focus {
     .subtitle {
         display: none; /* Hemat tempat header */
     }
-    
-    /* 7. Profil User */
-    .profile-header {
-        padding: 10px;
+
+    .logo, .subtitle { 
+        text-align: center; 
     }
 }
