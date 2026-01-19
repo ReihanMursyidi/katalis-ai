@@ -139,7 +139,7 @@ function updateUserUI(userData) {
         if (userData) {
             appGuest.classList.add('hidden');
             appUser.classList.remove('hidden'); 
-            appUser.style.display = 'block'; // Paksa tampil
+            appUser.style.display = 'block';
             
             // Update Teks Nama & Koin
             const displayName = document.getElementById('display-name');
@@ -158,7 +158,9 @@ function updateUserUI(userData) {
             }
 
             const isUserPro = userData.plan === 'pro' || userData.is_pro === true;
-            updateUserPlanUI(isUserPro);
+            if (typeof updateUserPlanUI === "function") {
+                updateUserPlanUI(isUserPro);
+            }
         } else {
             // Mode Tamu
             appGuest.classList.remove('hidden');
@@ -174,7 +176,6 @@ function updateUserUI(userData) {
         if (userData) {
             navGuest.classList.add('hidden');
             navUser.classList.remove('hidden');
-            appUser.style.display = 'block';
             
             // Update Nama Navbar
             const navName = document.getElementById('nav-username');
@@ -184,7 +185,6 @@ function updateUserUI(userData) {
             const navAvatar = document.getElementById('nav-avatar');
             if(navAvatar) {
                 navAvatar.innerText = userData.full_name.charAt(0).toUpperCase();
-               
                 if (typeof getAvatarColor === "function") {
                     navAvatar.style.background = getAvatarColor(userData.full_name);
                 }
