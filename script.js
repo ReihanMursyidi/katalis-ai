@@ -87,7 +87,10 @@ async function handleLogin(event) {
         } else {
             alert("Gagal: " + result.detail);
         }
-    } catch (err) { alert("Error koneksi server."); } 
+    } catch (err) {
+        console.error("Detail Error:", err);
+        alert("Error koneksi: " + err.message);
+    } 
     finally { btn.innerHTML = 'Masuk'; btn.disabled = false; }
 }
 
@@ -756,3 +759,27 @@ document.addEventListener('DOMContentLoaded', () => {
     
 });
 
+function updateUserPlanUI(isPro) {
+    const badgeElement = document.getElementById('user-plan-badge');
+    
+    // Cek apakah elemen ada? Jika tidak, berhenti agar tidak error
+    if (!badgeElement) return;
+
+    if (isPro) {
+        // TAMPILAN PRO (Mahkota Emas)
+        badgeElement.innerHTML = `
+            <i class="fa-solid fa-crown text-yellow-400" style="font-size: 0.7rem;"></i> 
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 font-bold">Katalis PRO</span>
+        `;
+        badgeElement.style.borderColor = '#fbbf24'; 
+        badgeElement.style.background = 'rgba(251, 191, 36, 0.1)';
+    } else {
+        // TAMPILAN BASIC (Hijau Standar)
+        badgeElement.innerHTML = `
+            <i class="fa-solid fa-circle-check text-green-500" style="font-size: 0.6rem;"></i> 
+            Basic Plan
+        `;
+        badgeElement.style.borderColor = ''; 
+        badgeElement.style.background = '';
+    }
+}
