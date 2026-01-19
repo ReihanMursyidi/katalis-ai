@@ -147,14 +147,15 @@ function updateUserUI(userData) {
             // Update Avatar (FIX BUG DISINI)
             const avatarEl = document.getElementById('user-avatar');
             if(avatarEl) {
-                // Gunakan variabel 'avatarEl', BUKAN 'navAvatar'
                 avatarEl.innerText = userData.full_name.charAt(0).toUpperCase();
                 
-                // Pastikan fungsi getAvatarColor ada
                 if (typeof getAvatarColor === "function") {
                     avatarEl.style.background = getAvatarColor(userData.full_name);
                 }
             }
+
+            const isUserPro = userData.plan === 'pro' || userData.is_pro === true;
+            updateUserPlanUI(isUserPro);
         } else {
             // Mode Tamu
             appGuest.classList.remove('hidden');
@@ -170,6 +171,7 @@ function updateUserUI(userData) {
         if (userData) {
             navGuest.classList.add('hidden');
             navUser.classList.remove('hidden');
+            appUser.style.display = 'block';
             
             // Update Nama Navbar
             const navName = document.getElementById('nav-username');
