@@ -775,7 +775,7 @@ function updateUserPlanUI(isPro) {
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 font-bold">Katalis PRO</span>
         `;
         badgeElement.style.borderColor = '#fbbf24'; 
-        badgeElement.style.background = 'rgba(251, 191, 36, 0.1)';
+        badgeElement.style.background = 'transparent';
     } else {
         // TAMPILAN BASIC (Hijau Standar)
         badgeElement.innerHTML = `
@@ -786,3 +786,4 @@ function updateUserPlanUI(isPro) {
         badgeElement.style.background = '';
     }
 }
+
