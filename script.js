@@ -772,7 +772,7 @@ function updateUserPlanUI(isPro) {
         // TAMPILAN PRO (Mahkota Emas)
         badgeElement.innerHTML = `
             <i class="fa-solid fa-crown text-yellow-400" style="font-size: 0.7rem;"></i> 
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 font-bold">Katalis PRO</span>
+            <span class="text-transparent bg-clip-text font-bold">Katalis PRO</span>
         `;
         badgeElement.style.borderColor = '#fbbf24'; 
         badgeElement.style.background = 'rgba(251, 191, 36, 0.1)';
